@@ -1,0 +1,29 @@
+Source: neos
+Priority: optional
+Maintainer: Mehdi Dogguy <mehdi.dogguy@edf.fr>
+Build-Depends:
+ debhelper (>= 8)
+Build-Depends-Indep:
+ perl (>= 5.10)
+Standards-Version: 3.9.3
+Section: devel
+Vcs-Browser: http://clay08ib.cla.edfgdf.fr/ccn-hpc-svn/iq/scripts/neos
+Vcs-Svn: http://clay08ib.cla.edfgdf.fr/ccn-hpc-svn/iq/scripts/neos
+
+Package: neos
+Architecture: all
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ ${perl:Depends},
+ perl-modules,
+ libfile-chmod-perl,
+ libconfig-general-perl,
+ libslurm-perl,
+ libcrypt-generatepassword-perl
+Description: Resource reservation scripts through Slurm
+ This package contains a set of scripts which allow users to book compute
+ resources for graphical rendering using the batch manager Slurm.
+ .
+ This package should be installed on all nodes (frontends as well as compute
+ nodes).

@@ -1,0 +1,12 @@
+neos (0.2) calibre7; urgency=low
+
+  * New welcome msg.
+  * Modify slurm_srun_prolog.neos to check if partition is declared in neos.conf 
+
+ -- Antonio J. Russo <antonio-externe.russo@edf.fr>  Thu, 14 Mar 2013 14:55:18 +0100
+
+neos (0.1) calibre7; urgency=low
+
+  * Initial Release
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 Feb 2013 10:00:00 +0200

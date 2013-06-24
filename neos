@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+# Copyright © 2013 EDF SA
+# Contact:
+#       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
+#       1, Avenue du General de Gaulle
+#       92140 Clamart
+#
+# Authors: Mehdi Dogguy <mehdi.dogguy@edf.fr>
+#          Antonio Russo <antonio-externe.russo@edf.fr>
+#
+# This program is free software; you can redistribute in and/or modify
+# it under the terms of the GNU General Public License, version 2, as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# See the GNU General Public License for more details. On Calibre
+# systems, the full text of the GNU General Public License can be
+# found in `/usr/share/common-licenses/GPL'.
+
+use strict;
+use Sys::Hostname;
+use Neos;
+
+use Switch;
+
+my $para_dir = $ARGV[0];
+my $salome_dir = undef;
+if ($#ARGV > 0) {
+    $salome_dir = $ARGV[1];
+}
+
+my $job_partition = Neos::get_partition ();
+my $constraint = Neos::get_constraint ();
+my $hostlist = Neos::host_list ();
+my $firstnode = Neos::first_node ();
+
+if (Neos::is_good_partition($job_partition)) {
+    switch ($constraint) {
+        case "pvserver" {
+            if ($firstnode eq hostname) {
+                open (IPPVCLIENT, sprintf('< %s', Neos::get_param('ip_pvclient')));
+                my $ipaddr = <IPPVCLIENT>;
+		chomp($ipaddr);
+                close (IPPVCLIENT);
+                my $pvrun = sprintf ("vglrun %s/bin/pvserver -rc -ch=%s", $para_dir, $ipaddr);
+                if ($salome_dir == undef) {
+                    system ($pvrun);
+                } else {
+		# pvserver should be started on the first node only! This is mainly because
+		# we have two simple ases:
+		# 1) Paraview: not run in parallel mode so we don't need more than 1 node. In
+		#    fact, NODESLIST should contain only one node.
+		# 2) Paravis: we run pserver through mpirun, which should take care of getting
+		#    a pserver up per node ; but we make sure that DISPLAY is correctly set.
+                    my $display = sprintf ("DISPLAY=:%s", Neos::get_display ());
+                    my $cmd_run = sprintf (
+                        '%s vglrun %s/runSession "mpirun -x %s --host %s %s"',
+                        $display,
+                        $salome_dir,
+                        $ENV{'SLRUM_NNODES'},
+                        $hostlist,
+                        $pvrun
+                        );
+                    system ($cmd_run);
+                }
+            }
+        }
+
+        else {
+	    my $x_pid = Neos::get_x_pid ();
+            my $end_time = Neos::get_job_endtime ();
+            my $now = `date +%s`;
+            while ($end_time - 30 > $now) {
+		if ($x_pid != "") {
+		    system("ps -p $x_pid >/dev/null");
+		    if ($? != 0) {
+			last;
+		    }
+		}
+                sleep(10);
+            }
+	    Neos::kill_x_vnc ();
+        }
+    }
+}

@@ -1,0 +1,117 @@
+#!/usr/bin/perl
+# Copyright © 2013 EDF SA
+# Contact:
+#       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
+#       1, Avenue du General de Gaulle
+#       92140 Clamart
+#
+# Authors: Mehdi Dogguy <mehdi.dogguy@edf.fr>
+#          Antonio Russo <antonio-externe.russo@edf.fr>
+#
+# This program is free software; you can redistribute in and/or modify
+# it under the terms of the GNU General Public License, version 2, as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# See the GNU General Public License for more details. On Calibre
+# systems, the full text of the GNU General Public License can be
+# found in `/usr/share/common-licenses/GPL'.
+
+use strict;
+use Neos;
+
+my $firstnode = Neos::first_node ();
+my $hostlist = Neos::host_list ();
+my $constraint = Neos::get_constraint ();
+my $daylimit = Neos::get_job_daylimit ();
+my $name = Neos::get_realname ();
+my $jobid = $ENV{'SLURM_JOB_ID'};
+my $rfbport = Neos::get_rfbport ();
+my $job_partition = Neos::get_partition ();
+
+
+
+if (Neos::is_good_partition($job_partition)) {
+
+    if ($firstnode =~ /cg.*/ && $constraint ne "pvserver") {
+
+        my $iprin;
+        chomp($iprin = `grep rin$firstnode /etc/hosts | awk '{print \$1}'`);
+        my $vnc_res = Neos::get_vncres ();
+        my $vnc_depth = Neos::get_param('vnc_depth');
+        my $password = Neos::gen_password ();
+
+        print <<MESSAGE;
+
+		$name
+	        vous avez demande des ressources pour le traitement graphique des donnees. 
+	        Le systeme vient de vous mettre a disposition le(s) noeud(s) suivant(s) :
+	
+	
+	        $hostlist
+	
+	        #########################################################################
+	
+	        Le serveur VNC a ete demarre sur le noeud :
+	
+	
+	        $firstnode:$rfbport (joinable sur l'adresse IP $iprin:$rfbport)
+	
+	        #########################################################################
+	
+	        Pour proteger votre session, un mot de passe temporaire a ete genere :
+	
+	        $password
+	       
+	        #########################################################################
+	
+	        Vous pouvez personnaliser la resolution en utilisant le parametre de srun
+	        "--constraint=vncres" de la facon suivante :
+	       
+	        --constraint=vncres:0 pour une resolution de 1024x768 (24 bit)
+	        --constraint=vncres:1 pour une resolution de 1280x1024 (24 bit)
+	        --constraint=vncres:2 pour une resolution de 1680x1050 (24 bit)
+	        --constraint=vncres:3 pour une resolution de 1920x1200 (24 bit)
+	       
+	        #########################################################################
+	       
+	        La presente session restera active jusqu'au $daylimit.
+	       
+	        Pour suspendre cette session merci d'executer deux fois la commande :
+	
+	        "CTRL + c" 
+	
+	        #########################################################################
+MESSAGE
+
+    } elsif ($firstnode =~ /cg.*/ && $constraint eq "pvserver") {
+        print <<MESSAGE;
+	#########################################################################
+
+	$name,
+
+	vous avez demande des ressources pour le traitement graphique des donnees
+        avec le logiciel Paraview en mode client - serveur.
+        Le systeme vient de vous mettre a disposition le noeud suivant :
+
+        $firstnode
+
+	Ce noeud restera actif jusqu'au $daylimit
+        ou bien jusqu'a la fermeture du client Paraview.
+
+	Le PExSI R & D et le CCN HPC sont a votre disposition en cas d'incidents ou
+        de problemes concernant l'utilisation de ce cluster :
+
+                          dsp-cspit-ivanoe\@edf.fr
+
+	#########################################################################	
+MESSAGE
+
+    } else {
+        # Nothing to do
+        exit 0
+    }
+}

@@ -1,0 +1,11 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+PLDESTDIR := $(CURDIR)/debian/neos
+
+%:
+	dh $@
+
+.PHONY: override_dh_auto_install
+override_dh_auto_install:
+	$(MAKE) install DESTDIR=$(PLDESTDIR)

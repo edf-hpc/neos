@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+# Copyright © 2013 EDF SA
+# Contact:
+#       CCN - HPC <dsp-cspit-ccn-hpc@edf.fr>
+#       1, Avenue du General de Gaulle
+#       92140 Clamart
+#
+# Authors: Mehdi Dogguy <mehdi.dogguy@edf.fr>
+#          Antonio Russo <antonio-externe.russo@edf.fr>
+#
+# This program is free software; you can redistribute in and/or modify
+# it under the terms of the GNU General Public License, version 2, as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# See the GNU General Public License for more details. On Calibre
+# systems, the full text of the GNU General Public License can be
+# found in `/usr/share/common-licenses/GPL'.
+
+use strict;
+use Neos;
+
+my @files = (Neos::get_param('vauthfile'),
+	     Neos::get_param('xauthfile'),
+	     Neos::get_param('ip_pvclient'),
+	     Neos::get_param('x_logfile'),
+	     sprintf ("/tmp/.X%s-lock", Neos::get_display()),
+	     sprintf ("/tmp/.X11-unix/X%s", Neos::get_display())
+    );
+
+unlink @files;
+
+Neos::kill_x_vnc ();
