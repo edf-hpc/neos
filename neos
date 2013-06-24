@@ -21,68 +21,72 @@
 # found in `/usr/share/common-licenses/GPL'.
 
 use strict;
+use Getopt::Long;
 use Sys::Hostname;
 use Neos;
 
 use Switch;
 
-my $para_dir = $ARGV[0];
-my $salome_dir = undef;
-if ($#ARGV > 0) {
-    $salome_dir = $ARGV[1];
-}
-
+# Job parameters
 my $job_partition = Neos::get_partition ();
 my $constraint = Neos::get_constraint ();
 my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
+my $resolution = Neos::get_vncres ();
+
+my $result = GetOptions ("resolution=s" => \$resolution);
 
 if (Neos::is_good_partition($job_partition)) {
-    switch ($constraint) {
-        case "pvserver" {
-            if ($firstnode eq hostname) {
-                open (IPPVCLIENT, sprintf('< %s', Neos::get_param('ip_pvclient')));
-                my $ipaddr = <IPPVCLIENT>;
-		chomp($ipaddr);
-                close (IPPVCLIENT);
-                my $pvrun = sprintf ("vglrun %s/bin/pvserver -rc -ch=%s", $para_dir, $ipaddr);
-                if ($salome_dir == undef) {
-                    system ($pvrun);
-                } else {
-		# pvserver should be started on the first node only! This is mainly because
-		# we have two simple ases:
-		# 1) Paraview: not run in parallel mode so we don't need more than 1 node. In
-		#    fact, NODESLIST should contain only one node.
-		# 2) Paravis: we run pserver through mpirun, which should take care of getting
-		#    a pserver up per node ; but we make sure that DISPLAY is correctly set.
-                    my $display = sprintf ("DISPLAY=:%s", Neos::get_display ());
-                    my $cmd_run = sprintf (
-                        '%s vglrun %s/runSession "mpirun -x %s --host %s %s"',
-                        $display,
-                        $salome_dir,
-                        $ENV{'SLRUM_NNODES'},
-                        $hostlist,
-                        $pvrun
-                        );
-                    system ($cmd_run);
-                }
-            }
-        }
-
-        else {
-	    my $x_pid = Neos::get_x_pid ();
-            my $end_time = Neos::get_job_endtime ();
-            my $now = `date +%s`;
-            while ($end_time - 30 > $now) {
-		if ($x_pid != "") {
-		    system("ps -p $x_pid >/dev/null");
-		    if ($? != 0) {
-			last;
-		    }
-		}
-                sleep(10);
-            }
-	    Neos::kill_x_vnc ();
-        }
+    Neos::init ();
+    my $password = "";
+    # Generate a new password if being run in "BATCH" mode
+    if ($ENV{'ENVIRONMENT'} eq "BATCH") {
+        $password = Neos::gen_password ();
     }
+
+    # Run Xvnc (with appropriate parameters)
+    my $xvnc = sprintf(Neos::get_param('cmd'),
+                       Neos::get_display (),
+                       $resolution,
+                       Neos::get_rfbport ()
+                );
+    my $cmd = sprintf("%s > %s 2>&1 &",
+                      $xvnc,
+                      Neos::get_param('x_logfile')
+                );
+    system ($cmd);
+    
+
+    # Launch graphical session 
+    if ($firstnode eq hostname) {
+        system (sprintf("DISPLAY=:%s %s >/dev/null 2>&1 &",
+                        Neos::get_display (),
+                        Neos::get_param('session_manager')
+               ));
+    }
+
+    # Print information about the present job (Only in "BATCH" mode)
+    if ($ENV{'ENVIRONMENT'} eq "BATCH") {
+        Neos::print_job_infos ($password);
+    }
+
+    # Monitor status of the Xvnc process, and exit as soon as it is
+    # killed or walltime is reached.
+    my $x_pid = Neos::get_x_pid ();
+    my $end_time = Neos::get_job_endtime ();
+    my $now = `date +%s`;
+    while ($end_time - 30 > $now) {
+        if ($x_pid != "") {
+            system("ps -p $x_pid >/dev/null");
+            if ($? != 0) {
+                print "Neos(error): Xvnc disappeared... exiting!\n";
+                last;
+            }
+        }
+        sleep(10);
+    }
+
+    # Be sure Xvnc is killed before exiting (in case walltime is reached
+    # but Xvnc is still around).
+    Neos::kill_x_vnc ();
 }

@@ -1,7 +1,17 @@
+neos (0.3~casanova1) calibre7; urgency=low
+
+  * Deleted slurm_task_prolog.neos and servers.pvsc (not used anymore).
+  * Simplified other scripts (no pvserver scenario, ...).
+  * Generate alpha-numeric passwords.
+  * Specify resolution using a command-line flag.
+  * Run init() only explicitly.
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 12 Apr 2013 09:58:35 +0200
+
 neos (0.2) calibre7; urgency=low
 
   * New welcome msg.
-  * Modify slurm_srun_prolog.neos to check if partition is declared in neos.conf 
+  * Modify slurm_srun_prolog.neos to check if partition is declared in neos.conf
 
  -- Antonio J. Russo <antonio-externe.russo@edf.fr>  Thu, 14 Mar 2013 14:55:18 +0100
 

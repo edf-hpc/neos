@@ -69,7 +69,6 @@ sub init {
     mode => 0700,
   });
 }
-init ();
 
 sub get_job_detail {
     my ($detail) = @_;
@@ -141,7 +140,7 @@ sub get_vncres {
 }
 
 sub gen_password {
-    my $password = chars(8, 8);
+    my $password = chars(8, 8, ["a".."z", "A".."Z", 0..9]);
     open (VNCPASS, sprintf("> %s", $config{'vauthfile'}));
     my $encrypted_text = `echo "$password" | $config{'vnc_passwd'}`;
     print VNCPASS $encrypted_text;
@@ -191,5 +190,35 @@ sub get_job_daylimit {
     my $res = `date --date "\@$endtime"`;
     chomp($res);
     return $res;
+}
+
+sub print_job_infos {
+    my ($password) = @_;
+
+    my $job_partition = get_partition ();
+    my $firstnode = first_node ();
+    my $hostlist = host_list ();
+    my $daylimit = get_job_daylimit ();
+    my $jobid = $ENV{'SLURM_JOB_ID'};
+    my $rfbport = get_rfbport ();
+    my $iprin;
+    chomp($iprin = `grep rin$firstnode /etc/hosts | awk '{print \$1}'`);
+
+    print <<MESSAGE;
+
+<$job_partition>
+        <nodes> 
+                <node>$hostlist</node>
+        </nodes>
+        <vncserver>
+                <node>$firstnode</node>
+                <ipaddress>$iprin</ipaddress>
+                <session>$rfbport</session>
+                <password>$password</password>
+        </vncserver>
+        <enddatetime>$daylimit</enddatetime>"
+        <pid>$jobid</pid>"
+</$job_partition>
+MESSAGE
 }
 1;
