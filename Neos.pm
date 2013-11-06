@@ -34,6 +34,9 @@ use File::chmod;                       # libfile-chmod-perl
 use Config::General qw(ParseConfig);   # libconfig-general-perl
 use Slurm;                             # libslurm-perl
 use Crypt::GeneratePassword qw(chars); # libcrypt-generatepassword-perl
+use Storable qw(freeze thaw);          # perl-modules
+use File::Slurp qw(read_file write_file); # libfile-slurp-perl
+
 
 # Load the Switch..Case construct
 use Switch;
@@ -48,6 +51,7 @@ sub debug {
 
 # Read configuration files
 my $config_file = "/etc/neos.conf";
+my $config_dump = "$ENV{'HOME'}/.neos/config_$ENV{'SLURM_JOB_ID'}";
 our %config= ();
 
 sub read_config_file {
@@ -63,6 +67,18 @@ sub read_config_file {
 sub config_file_handler {
     my ($opt_name, $opt_value) = @_;
     read_config_file($opt_value);
+}
+
+sub dump_config {
+    my ($file) = @_;
+    my $yaml = freeze(\%Neos::config);
+    write_file($file, { binmode => ':raw' }, $yaml);
+}
+
+sub load_config {
+    my ($file) = @_;
+    my $yaml = read_file($file, { binmode => ':raw' });
+    %Neos::config = %{thaw($yaml)};
 }
 
 if (-e $config_file) {
