@@ -1,5 +1,1 @@
-neos				/usr/bin
-Scripts/neos_srun_prolog	/usr/share/neos
-Scripts/neos_task_prolog	/usr/share/neos
-Scripts/neos_epilog		/usr/share/neos
 neos.conf			/etc
