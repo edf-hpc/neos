@@ -33,8 +33,10 @@ my $constraint = Neos::get_constraint ();
 my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
 my $resolution = Neos::get_vncres ();
+my $result = GetOptions ("resolution=s" => \$resolution,
+                         "config=s"     => \&Neos::config_file_handler,
+);
 
-my $result = GetOptions ("resolution=s" => \$resolution);
 
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();

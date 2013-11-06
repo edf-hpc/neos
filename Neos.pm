@@ -39,11 +39,29 @@ use Crypt::GeneratePassword qw(chars); # libcrypt-generatepassword-perl
 use Switch;
 
 # Read configuration files
-my %config = ParseConfig (
-    -ConfigFile => "/etc/neos.conf",
-    -SplitPolicy => "equalsign",
-    -InterPolateEnv => 1
-    );
+my $config_file = "/etc/neos.conf";
+our %config= ();
+
+sub read_config_file {
+    my ($cfg) = @_;
+    debug("Reading configuration file $cfg");
+    %Neos::config = ParseConfig (
+	-ConfigFile => $cfg,
+	-SplitPolicy => "equalsign",
+	-InterPolateEnv => 1
+	);
+}
+
+sub config_file_handler {
+    my ($opt_name, $opt_value) = @_;
+    read_config_file($opt_value);
+}
+
+if (-e $config_file) {
+    read_config_file ($config_file);
+} else {
+    debug ("Configuration file $config_file not found!");
+}
 
 sub get_param {
     my ($param) = @_;
