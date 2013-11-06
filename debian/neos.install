@@ -1,4 +1,4 @@
 neos				/usr/bin
-slurm_srun_prolog.neos		/usr/sbin
-slurm_epilog.neos		/usr/sbin
+neos_srun_prolog		/usr/sbin
+neos_epilog			/usr/sbin
 neos.conf			/etc
