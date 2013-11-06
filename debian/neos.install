@@ -1,4 +1,5 @@
 neos				/usr/bin
 neos_srun_prolog		/usr/sbin
+neos_task_prolog		/usr/sbin
 neos_epilog			/usr/sbin
 neos.conf			/etc
