@@ -38,6 +38,14 @@ use Crypt::GeneratePassword qw(chars); # libcrypt-generatepassword-perl
 # Load the Switch..Case construct
 use Switch;
 
+# Debug utility
+sub debug {
+    my ($msg) = @_;
+    if ($ENV{'NEOS_DEBUG'} == 1) {
+	print ("W: $msg\n");
+    }
+}
+
 # Read configuration files
 my $config_file = "/etc/neos.conf";
 our %config= ();
