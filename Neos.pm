@@ -81,6 +81,39 @@ sub set_param {
     $config{$param} = $value;
 }
 
+# Scenario actions: main, srun, task, epilog
+sub get_default_scenario {
+    return get_param('default_scenario');
+}
+
+sub load_scenario {
+    my ($scenario) = @_;
+    $scenario = Neos::get_default_scenario () if $scenario eq "";
+    my $mod = "Neos::Scenarios::$scenario";
+    $mod=~s/-/_/g;
+    eval "use $mod";
+    if ($@) {
+	die("Unable to load scenario $scenario: $@");
+    }
+}
+
+my %scenario_actions = ();
+
+sub insert_action {
+    my ($action_name, $action_sub) = @_;
+    $scenario_actions{$action_name} = $action_sub;
+}
+
+sub run_action {
+    my ($action_name) = @_;
+    my $scenario_name = get_default_scenario ();
+    if (exists $scenario_actions{$action_name}) {
+	$scenario_actions{$action_name}->();
+    } else {
+	debug ("Action $action_name from scenario $scenario_name is not defined!");
+    }
+}
+
 # Current user (note that visu.cfg uses $ENV{'USER'})
 my $user = getlogin();
 

@@ -33,7 +33,9 @@ my $constraint = Neos::get_constraint ();
 my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
 my $resolution = Neos::get_vncres ();
+my $scenario = "";
 my $result = GetOptions ("resolution=s" => \$resolution,
+                         "scenario=s"   => \$scenario,
                          "config=s"     => \&Neos::config_file_handler,
 );
 
