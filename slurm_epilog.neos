@@ -25,18 +25,11 @@ use Neos;
 
 my $job_partition = Neos::get_partition ();
 
+Neos::load_config($Neos::config_dump);
+
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
 
-    my @files = (Neos::get_param('vauthfile'),
-                 Neos::get_param('xauthfile'),
-                 Neos::get_param('ip_pvclient'),
-                 Neos::get_param('x_logfile'),
-                 sprintf ("/tmp/.X%s-lock", Neos::get_display()),
-                 sprintf ("/tmp/.X11-unix/X%s", Neos::get_display())
-        );
-
-    unlink @files;
-
-    Neos::kill_x_vnc ();
+    Neos::load_scenario(Neos::get_param('scenario'));
+    Neos::run_action('epilog');
 }

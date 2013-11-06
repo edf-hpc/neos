@@ -24,13 +24,13 @@ use strict;
 use Sys::Hostname;
 use Neos;
 
+Neos::load_config($Neos::config_dump);
+
 my $job_partition = Neos::get_partition ();
 
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
-    # Print information about the present job (When not in "BATCH" mode)
-    if ($ENV{'ENVIRONMENT'} ne "BATCH") {
-        my $password = Neos::gen_password ();
-        Neos::print_job_infos ($password);
-    }
+
+    Neos::load_scenario(Neos::get_param('scenario'));
+    Neos::run_action('srun');
 }

@@ -47,55 +47,7 @@ Neos::dump_config($Neos::config_dump);
 
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
-    my $password = "";
-    # Generate a new password if being run in "BATCH" mode
-    if ($ENV{'ENVIRONMENT'} eq "BATCH") {
-        $password = Neos::gen_password ();
-    }
 
-    # Run Xvnc (with appropriate parameters)
-    my $xvnc = sprintf(Neos::get_param('cmd'),
-                       Neos::get_display (),
-                       $resolution,
-                       Neos::get_rfbport ()
-                );
-    my $cmd = sprintf("%s > %s 2>&1 &",
-                      $xvnc,
-                      Neos::get_param('x_logfile')
-                );
-    system ($cmd);
-    
-
-    # Launch graphical session 
-    if ($firstnode eq hostname) {
-        system (sprintf("DISPLAY=:%s %s >/dev/null 2>&1 &",
-                        Neos::get_display (),
-                        Neos::get_param('session_manager')
-               ));
-    }
-
-    # Print information about the present job (Only in "BATCH" mode)
-    if ($ENV{'ENVIRONMENT'} eq "BATCH") {
-        Neos::print_job_infos ($password);
-    }
-
-    # Monitor status of the Xvnc process, and exit as soon as it is
-    # killed or walltime is reached.
-    my $x_pid = Neos::get_x_pid ();
-    my $end_time = Neos::get_job_endtime ();
-    my $now = `date +%s`;
-    while ($end_time - 30 > $now) {
-        if ($x_pid != "") {
-            system("ps -p $x_pid >/dev/null");
-            if ($? != 0) {
-                print "Neos(error): Xvnc disappeared... exiting!\n";
-                last;
-            }
-        }
-        sleep(10);
-    }
-
-    # Be sure Xvnc is killed before exiting (in case walltime is reached
-    # but Xvnc is still around).
-    Neos::kill_x_vnc ();
+    Neos::load_scenario($scenario);
+    Neos::run_action('main');
 }
