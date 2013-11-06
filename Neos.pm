@@ -25,7 +25,7 @@ package Neos;
 # Be good
 use strict;
 
-my $VERSION = '0.2';
+my $VERSION = '0.3';
 
                                        # Dependencies (Debian packages)
                                        # ==============================
