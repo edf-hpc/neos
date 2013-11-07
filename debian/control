@@ -28,3 +28,19 @@ Description: Resource reservation scripts through Slurm
  .
  This package should be installed on all nodes (frontends as well as compute
  nodes).
+
+Package: slurm-llnl-neos-plugin
+Architecture: all
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ ${perl:Depends},
+ slurm-llnl-generic-scripts-plugin,
+ neos
+Description: Resource reservation scripts through Slurm
+ This package contains a set of scripts which allow users to book compute
+ resources for graphical rendering using the batch manager Slurm.
+ .
+ This package should be installed on all nodes (frontends as well as compute
+ nodes). It provides symbolic links to various provided prolog scripts and
+ install them using slurm-llnl-generic-scripts-plugin.
