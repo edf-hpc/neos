@@ -77,8 +77,12 @@ sub dump_config {
 
 sub load_config {
     my ($file) = @_;
-    my $yaml = read_file($file, { binmode => ':raw' });
-    %Neos::config = %{thaw($yaml)};
+    if (-e $file) {
+	my $yaml = read_file($file, { binmode => ':raw' });
+	%Neos::config = %{thaw($yaml)};
+    } else {
+	die ("Can't find $file.\n");
+    }
 }
 
 if (-e $config_file) {
