@@ -28,6 +28,12 @@ use Neos;;
 
 Neos::load_config($Neos::config_dump);
 
+# Job parameters
+my $job_partition = Neos::get_partition ();
+my $constraint = Neos::get_constraint ();
+my $hostlist = Neos::host_list ();
+my $firstnode = Neos::first_node ();
+
 sub gnome_main {
     # Run Xvnc (with appropriate parameters)
     my $xvnc = sprintf(Neos::get_param('cmd'),
