@@ -17,6 +17,7 @@ Depends:
  ${misc:Depends},
  ${perl:Depends},
  perl-modules,
+ libfile-slurp-perl,
  libfile-chmod-perl,
  libconfig-general-perl,
  libslurm-perl,
