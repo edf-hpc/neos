@@ -25,7 +25,8 @@ package Neos;
 # Be good
 use strict;
 
-$VERSION = '0.3';
+our $VERSION = '0.3';
+my $mdp;
 
                                        # Dependencies (Debian packages)
                                        # ==============================
@@ -101,6 +102,11 @@ sub set_param {
     $config{$param} = $value;
 }
 
+# Resolution
+sub get_default_resolution {
+    return get_param('default_resolution');
+}
+
 # Scenario actions: main, srun, task, epilog
 sub get_default_scenario {
     return get_param('default_scenario');
@@ -126,7 +132,7 @@ sub insert_action {
 
 sub run_action {
     my ($action_name) = @_;
-    my $scenario_name = get_default_scenario ();
+    my $scenario_name = get_scenario_name ();
     if (exists $scenario_actions{$action_name}) {
 	$scenario_actions{$action_name}->();
     } else {
@@ -208,6 +214,16 @@ sub get_constraint {
     }
 }
 
+sub get_scenario_name {
+    my $constval = "scenario";
+    my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
+    if ($feature eq $constval) {
+        return $level;
+    } else {
+        return get_default_scenario ();
+    }
+}
+
 sub get_vncres {
     my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
     switch ($level) {
@@ -225,7 +241,8 @@ sub gen_password {
     print VNCPASS $encrypted_text;
     close (VNCPASS);
     chmod(0600, $config{'vauthfile'});
-    return $password;
+    $mdp = $password;
+    return $mdp;
 }
 
 sub store_ip_pvclient {
@@ -260,6 +277,21 @@ sub kill_x_vnc {
     }
 }
 
+sub get_pv_pid {
+    # FIXME: Race between several running pvserver instances.
+    my $pid_cmd = sprintf("ps aux | egrep \"pvserver\"");
+    my $pv_pid = `$pid_cmd`;
+    chomp($pv_pid);
+    return $pv_pid;
+}
+
+sub kill_pvserver {
+    my $pv_pid = get_pv_pid ();
+    if ($pv_pid != "") {
+        kill 9, $pv_pid;
+    }
+}
+
 sub get_job_endtime {
     return get_job_detail ('end_time');
 }
@@ -282,22 +314,33 @@ sub print_job_infos {
     my $rfbport = get_rfbport ();
     my $iprin;
     chomp($iprin = `grep rin$firstnode /etc/hosts | awk '{print \$1}'`);
+    if ($iprin = ' ') {
+        $iprin = `grep -w $firstnode /etc/hosts | grep -v 127.0.1.1 | awk '{print \$1}'`;
+        chomp($iprin);
+    }
+
+    my $nodes = "";
+    my $hl = nodes_list();
+    while(my $host = $hl->shift()) {
+       $nodes .= "                <node>$host</node>\n";
+    }
 
     print <<MESSAGE;
 
 <$job_partition>
-        <nodes> 
-                <node>$hostlist</node>
+        <nodes>
+$nodes
         </nodes>
         <vncserver>
                 <node>$firstnode</node>
                 <ipaddress>$iprin</ipaddress>
                 <session>$rfbport</session>
-                <password>$password</password>
+                <password>$mdp</password>
         </vncserver>
         <enddatetime>$daylimit</enddatetime>"
         <pid>$jobid</pid>"
 </$job_partition>
 MESSAGE
 }
+
 1;
