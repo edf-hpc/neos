@@ -55,6 +55,10 @@ my $config_file = "/etc/neos.conf";
 my $config_dump = "$ENV{'HOME'}/.neos/config_$ENV{'SLURM_JOB_ID'}";
 our %config= ();
 
+sub get_config_job_file() {
+    return $config_dump;
+}
+
 sub read_config_file {
     my ($cfg) = @_;
     debug("Reading configuration file $cfg");

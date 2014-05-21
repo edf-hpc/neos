@@ -40,7 +40,7 @@ my $result = GetOptions ("resolution=s" => \$resolution,
 Neos::set_param('resolution', $resolution);
 Neos::set_param('scenario', Neos::get_default_scenario ());
 Neos::set_param('password', Neos::gen_password ());
-Neos::dump_config($Neos::config_dump);
+Neos::dump_config(Neos::get_config_job_file());
 
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
