@@ -24,6 +24,7 @@ package Neos::Scenarios;
 # Be good
 use strict;
 
+use Sys::Hostname;
 use Neos;;
 
 Neos::load_config($Neos::config_dump);
