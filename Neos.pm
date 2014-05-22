@@ -98,7 +98,7 @@ sub load_config {
 	my $yaml = read_file($file, { binmode => ':raw' });
 	%Neos::config = %{thaw($yaml)};
     } else {
-	die ("Can't find $file.\n");
+	debug ("W: Can't find configuration dump: \"$file\".\n");
     }
 }
 
