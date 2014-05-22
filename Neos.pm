@@ -278,35 +278,6 @@ sub get_display {
     return ($ENV{'SLURM_JOB_ID'} % $magic_number + 1);
 }
 
-sub get_x_pid {
-    my $pid_cmd = sprintf("ps aux | egrep \"Xvnc :%s\" | grep -v grep | awk '{print \$2}'", get_display ());
-    my $x_pid = `$pid_cmd`;
-    chomp($x_pid);
-    return $x_pid;
-}
-
-sub kill_x_vnc {
-    my $x_pid = get_x_pid ();
-    if ($x_pid != "") {
-        kill 9, $x_pid;
-    }
-}
-
-sub get_pv_pid {
-    # FIXME: Race between several running pvserver instances.
-    my $pid_cmd = sprintf("ps aux | egrep \"pvserver\"");
-    my $pv_pid = `$pid_cmd`;
-    chomp($pv_pid);
-    return $pv_pid;
-}
-
-sub kill_pvserver {
-    my $pv_pid = get_pv_pid ();
-    if ($pv_pid != "") {
-        kill 9, $pv_pid;
-    }
-}
-
 sub get_job_endtime {
     return get_job_detail ('end_time');
 }
@@ -316,6 +287,40 @@ sub get_job_daylimit {
     my $res = `date --date "\@$endtime"`;
     chomp($res);
     return $res;
+}
+
+sub get_program_pid {
+    my ($program) = @_;
+    my $pid_cmd = sprintf("ps aux | egrep $program | grep -v grep | grep %s | awk '{print \$2}'",
+	get_display ());
+    my $pid = `$pid_cmd`;
+    chomp($pid);
+    return $pid;
+}
+
+sub kill_program {
+    my ($program) = @_;
+    my $pid = get_program_pid ($program);
+    if ($pid ne "") {
+        kill 9, $pid;
+    }
+}
+
+sub wait_for_process {
+    my ($program) = @_;
+    my $pid = get_program_pid ($program);
+    my $end_time = get_job_endtime ();
+    my $now = `date +%s`;
+    while ($end_time - 30 > $now) {
+        if ($pid ne "") {
+            system("ps -p $pid >/dev/null");
+            if ($? != 0) {
+                print "Neos(error): $program disappeared... exiting!\n";
+                last;
+            }
+        }
+        sleep(10);
+    }
 }
 
 sub print_job_infos {

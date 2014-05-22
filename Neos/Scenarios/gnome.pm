@@ -63,23 +63,11 @@ sub gnome_main {
 
     # Monitor status of the Xvnc process, and exit as soon as it is
     # killed or walltime is reached.
-    my $x_pid = Neos::get_x_pid ();
-    my $end_time = Neos::get_job_endtime ();
-    my $now = `date +%s`;
-    while ($end_time - 30 > $now) {
-        if ($x_pid != "") {
-            system("ps -p $x_pid >/dev/null");
-            if ($? != 0) {
-                print "Neos(error): Xvnc disappeared... exiting!\n";
-                last;
-            }
-        }
-        sleep(10);
-    }
+    Neos::wait_for_process(Neos::get_param("vnc_x"));
 
     # Be sure Xvnc is killed before exiting (in case walltime is reached
     # but Xvnc is still around).
-    Neos::kill_x_vnc ();
+    Neos::kill_program (Neos::get_param("vnc_x"));
 }
 
 sub gnome_srun {
@@ -100,7 +88,7 @@ sub gnome_clean {
 
     unlink @files;
 
-    Neos::kill_x_vnc ();
+    Neos::kill_program (Neos::get_param("vnc_x"));
 }
 
 Neos::insert_action('main', \&gnome_main);
