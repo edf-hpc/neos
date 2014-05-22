@@ -321,6 +321,7 @@ sub wait_for_process {
         }
         sleep(10);
     }
+    kill_program ($program);
 }
 
 sub print_job_infos {

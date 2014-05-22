@@ -64,10 +64,6 @@ sub gnome_main {
     # Monitor status of the Xvnc process, and exit as soon as it is
     # killed or walltime is reached.
     Neos::wait_for_process(Neos::get_param("vnc_x"));
-
-    # Be sure Xvnc is killed before exiting (in case walltime is reached
-    # but Xvnc is still around).
-    Neos::kill_program (Neos::get_param("vnc_x"));
 }
 
 sub gnome_srun {
