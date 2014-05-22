@@ -55,6 +55,14 @@ my $config_file = "/etc/neos.conf";
 my $config_dump = "$ENV{'HOME'}/.neos/config_$ENV{'SLURM_JOB_ID'}";
 our %config= ();
 
+# Initialization
+sub init {
+  make_path($config{'base_dir'}, {
+    verbose => 0,
+    mode => 0700,
+  });
+}
+
 sub get_config_job_file() {
     return $config_dump;
 }
@@ -67,6 +75,10 @@ sub read_config_file {
 	-SplitPolicy => "equalsign",
 	-InterPolateEnv => 1
 	);
+    if ($config{'base_dir'} ne "") {
+	init ();
+	$config_dump = "$config{'base_dir'}/config_$ENV{'SLURM_JOB_ID'}";
+    }
 }
 
 sub config_file_handler {
@@ -150,14 +162,6 @@ my $user = getlogin();
 # Slurm informations about current job
 my $slurm = Slurm::new();
 my $job_infos = $slurm->load_job($ENV{'SLURM_JOB_ID'});
-
-# Initialization
-sub init {
-  make_path($config{'base_dir'}, {
-    verbose => 0,
-    mode => 0700,
-  });
-}
 
 sub get_job_detail {
     my ($detail) = @_;
