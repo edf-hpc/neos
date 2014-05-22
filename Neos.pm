@@ -329,7 +329,7 @@ sub print_job_infos {
     my $rfbport = get_rfbport ();
     my $iprin;
     chomp($iprin = `grep rin$firstnode /etc/hosts | awk '{print \$1}'`);
-    if ($iprin = ' ') {
+    if ($iprin eq '') {
         $iprin = `grep -w $firstnode /etc/hosts | grep -v 127.0.1.1 | awk '{print \$1}'`;
         chomp($iprin);
     }
