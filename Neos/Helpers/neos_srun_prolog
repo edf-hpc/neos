@@ -31,6 +31,11 @@ my $job_partition = Neos::get_partition ();
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
 
+    if ($ENV{'ENVIRONMENT'} ne "BATCH") {
+        my $password = Neos::gen_password ();
+        Neos::dump_config();
+    }
+
     Neos::load_scenario(Neos::get_param('scenario'));
     Neos::run_action('srun');
 }
