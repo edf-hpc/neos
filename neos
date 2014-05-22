@@ -47,4 +47,6 @@ if (Neos::is_good_partition($job_partition)) {
 
     Neos::load_scenario($scenario);
     Neos::run_action('main');
+} else {
+    die("$job_partition is not configured for Neos.");
 }
