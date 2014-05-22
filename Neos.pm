@@ -334,7 +334,6 @@ sub print_job_infos {
     }
     chomp($nodes);
     print <<MESSAGE;
-
 <$job_partition>
         <nodes>
 $nodes
@@ -345,8 +344,8 @@ $nodes
                 <session>$rfbport</session>
                 <password>$mdp</password>
         </vncserver>
-        <enddatetime>$daylimit</enddatetime>"
-        <pid>$jobid</pid>"
+        <enddatetime>$daylimit</enddatetime>
+        <pid>$jobid</pid>
 </$job_partition>
 MESSAGE
 }
