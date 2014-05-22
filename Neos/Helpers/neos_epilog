@@ -25,7 +25,7 @@ use Neos;
 
 my $job_partition = Neos::get_partition ();
 
-Neos::load_config($Neos::config_dump);
+Neos::load_config();
 
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();

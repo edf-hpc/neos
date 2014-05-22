@@ -87,13 +87,13 @@ sub config_file_handler {
 }
 
 sub dump_config {
-    my ($file) = @_;
+    my $file = do { @_ ? shift : get_config_job_file() };
     my $yaml = freeze(\%Neos::config);
     write_file($file, { binmode => ':raw' }, $yaml);
 }
 
 sub load_config {
-    my ($file) = @_;
+    my $file = do { @_ ? shift : get_config_job_file() };
     if (-e $file) {
 	my $yaml = read_file($file, { binmode => ':raw' });
 	%Neos::config = %{thaw($yaml)};
