@@ -225,12 +225,17 @@ sub get_constraint {
 }
 
 sub get_scenario_name {
-    my $constval = "scenario";
-    my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
-    if ($feature eq $constval) {
-        return $level;
+    my ($scenario) = do { @_ ? shift : "" };
+    if ($scenario ne "") {
+	return $scenario;
     } else {
-        return get_default_scenario ();
+	my $constval = "scenario";
+	my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
+	if ($feature eq $constval) {
+	    return $level;
+	} else {
+	    return get_default_scenario ();
+	}
     }
 }
 
