@@ -332,7 +332,7 @@ sub print_job_infos {
     while(my $host = $hl->shift()) {
        $nodes .= "                <node>$host</node>\n";
     }
-
+    chomp($nodes);
     print <<MESSAGE;
 
 <$job_partition>
