@@ -133,7 +133,7 @@ sub load_scenario {
     $scenario = Neos::get_default_scenario () if $scenario eq "";
     my $mod = "Neos::Scenarios::$scenario";
     $mod=~s/-/_/g;
-    eval "use $mod";
+    eval "use $mod;";
     if ($@) {
 	die("Unable to load scenario $scenario: $@");
     }
