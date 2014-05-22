@@ -135,7 +135,7 @@ sub load_scenario {
     $mod=~s/-/_/g;
     eval "use $mod;";
     if ($@) {
-	die("Unable to load scenario $scenario: $@");
+	die("E: Unable to load scenario $scenario: $@");
     }
 }
 
