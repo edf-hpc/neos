@@ -32,6 +32,7 @@ my $job_partition = Neos::get_partition ();
 my $resolution = Neos::get_vncres ();
 my $scenario = "";
 my $result = GetOptions ("resolution=s" => \$resolution,
+                         "param1=s"     => \$Neos::param1,
                          "scenario=s"   => \$scenario,
                          "config=s"     => \&Neos::config_file_handler,
 );

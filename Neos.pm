@@ -38,6 +38,7 @@ use Crypt::GeneratePassword qw(chars); # libcrypt-generatepassword-perl
 use Storable qw(freeze thaw);          # perl-modules
 use File::Slurp qw(read_file write_file); # libfile-slurp-perl
 
+my $param1 = "";
 
 # Load the Switch..Case construct
 use Switch;
@@ -113,6 +114,15 @@ if (-e $config_file) {
 sub get_param {
     my ($param) = @_;
     return $config{$param};
+}
+
+sub get_param1 {
+    my ($default) = @_;
+    if ($param1 ne "") {
+	return $param1;
+    } else {
+	return get_param($default);
+    }
 }
 
 sub set_param {
