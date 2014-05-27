@@ -278,6 +278,12 @@ sub store_ip_pvclient {
     chmod(0600, $config{'ip_pvclient'});
 }
 
+sub get_ip_pvclient {
+    my $output = `cat $config{'ip_pvclient'}`;
+    chomp($output);
+    return $output;
+}
+
 my $magic_number = 59530;
 
 sub get_rfbport {
