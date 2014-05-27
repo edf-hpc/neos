@@ -36,6 +36,6 @@ if (Neos::is_good_partition($job_partition)) {
 	Neos::dump_config();
     }
 
-    Neos::load_scenario(Neos::get_param('scenario'));
+    Neos::load_scenario(Neos::get_scenario_name ());
     Neos::run_action('srun');
 }
