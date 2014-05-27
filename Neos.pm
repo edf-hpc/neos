@@ -338,6 +338,7 @@ sub wait_for_process {
         sleep(10);
     }
     kill_program ($program);
+    die ("Neos(error): $program disappeared... exiting!\n");
 }
 
 sub print_job_infos {
