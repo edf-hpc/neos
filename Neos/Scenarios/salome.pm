@@ -33,7 +33,6 @@ my $job_partition = Neos::get_partition ();
 my $constraint = Neos::get_constraint ();
 my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
-my $jobid = $ENV{'SLURM_JOB_ID'};
 my $display_number = Neos::get_display ();
 
 sub print_salome_job_infos() {
@@ -63,7 +62,7 @@ $nodes
                 <port>$display_number</port>
         </salome_server>
         <enddatetime>$daylimit</enddatetime>
-        <pid>$jobid</pid>
+        <pid>$Neos::jobid</pid>
 </$job_partition>
 MESSAGE
 }
