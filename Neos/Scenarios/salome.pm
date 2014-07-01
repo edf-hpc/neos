@@ -86,7 +86,7 @@ sub salome_main {
     system ($cmdx);
 
     my $runSession = sprintf("%s/runSession", Neos::get_param1('salome_path'));
-    my $cmd = sprintf("%s mpirun -x DISPLAY=:%s -x LIBGL_ALWAYS_INDIRECT=y pvserver -rc -ch=%s >>%s 2>&1 &",
+    my $cmd = sprintf("%s mpirun -x DISPLAY=:0.0 vglrun -d :0.0 pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       $runSession,
                       Neos::get_display (),
 		      Neos::get_ip_pvclient (),
