@@ -102,6 +102,9 @@ sub salome_main {
     # Monitor status of the paraview process, and exit as soon as it is
     # killed or walltime is reached. Same as for Xvnc...
     Neos::wait_for_process("pvserver");
+    Neos::kill_program ("pvserver");
+    Neos::kill_program ("Xvnc");
+    Neos::slurm_terminate_job ();
 }
 
 sub salome_srun {
@@ -118,6 +121,8 @@ sub salome_clean {
     unlink @files;
 
     Neos::kill_program ("pvserver");
+    Neos::kill_program ("Xvnc");
+    Neos::slurm_terminate_job ();
 }
 
 Neos::insert_action('main', \&salome_main);

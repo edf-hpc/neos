@@ -337,8 +337,13 @@ sub wait_for_process {
         }
         sleep(10);
     }
-    kill_program ($program);
-    die ("Neos(error): $program disappeared... exiting!\n");
+}
+
+sub slurm_terminate_job {
+    my $job_id = $ENV{'SLURM_JOB_ID'};
+    if ($job_id ne "") {
+        system("scancel $job_id");
+    }
 }
 
 sub print_job_infos {
