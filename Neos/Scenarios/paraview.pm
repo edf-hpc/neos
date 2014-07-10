@@ -73,17 +73,6 @@ sub paraview_main {
     }
 
     # Run pvserver command
-    my $xvnc = sprintf(Neos::get_param('paraview_x'),
-                       Neos::get_display (),
-                       Neos::get_vncres(),
-                       Neos::get_rfbport ()
-                );
-    my $cmdx = sprintf("%s >> %s 2>&1 &",
-                      $xvnc,
-                      Neos::get_param('x_logfile')
-                );
-    system ($cmdx);
-
     my $cmd = sprintf("mpirun -x DISPLAY=:0.0 vglrun -d :0.0 pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       Neos::get_display (),
 		      Neos::get_ip_pvclient (),
@@ -100,7 +89,6 @@ sub paraview_main {
     # killed or walltime is reached. Same as for Xvnc...
     Neos::wait_for_process("pvserver");
     Neos::kill_program ("pvserver");
-    Neos::kill_program ("Xvnc");
     Neos::slurm_terminate_job ();
 }
 
@@ -123,7 +111,6 @@ sub paraview_clean {
     unlink @files;
 
     Neos::kill_program ("pvserver");
-    Neos::kill_program ("Xvnc");
     Neos::slurm_terminate_job ();
 }
 

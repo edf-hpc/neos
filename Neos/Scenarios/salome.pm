@@ -73,17 +73,6 @@ sub salome_main {
     }
 
     # Run Salome RunSession command
-    my $xvnc = sprintf(Neos::get_param('salome_x'),
-                       Neos::get_display (),
-                       Neos::get_vncres(),
-                       Neos::get_rfbport ()
-                );
-    my $cmdx = sprintf("%s >> %s 2>&1 &",
-                      $xvnc,
-                      Neos::get_param('x_logfile')
-                );
-    system ($cmdx);
-
     my $runSession = sprintf("%s/runSession", Neos::get_param1('salome_path'));
     my $cmd = sprintf("%s mpirun -x DISPLAY=:0.0 vglrun -d :0.0 pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       $runSession,
@@ -102,7 +91,6 @@ sub salome_main {
     # killed or walltime is reached. Same as for Xvnc...
     Neos::wait_for_process("pvserver");
     Neos::kill_program ("pvserver");
-    Neos::kill_program ("Xvnc");
     Neos::slurm_terminate_job ();
 }
 
@@ -125,7 +113,6 @@ sub salome_clean {
     unlink @files;
 
     Neos::kill_program ("pvserver");
-    Neos::kill_program ("Xvnc");
     Neos::slurm_terminate_job ();
 }
 
