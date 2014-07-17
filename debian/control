@@ -23,8 +23,13 @@ Depends:
  libslurm-perl,
  libcrypt-generatepassword-perl
 Description: Resource reservation scripts through Slurm
- This package contains a set of scripts which allow users to book compute
- resources for graphical rendering using the batch manager Slurm.
+ This package contains a program called Neos which eases the execution
+ of defined sequence of actions on a Slurm cluster. For example,
+ starting a graphical environment for users, prepare and start a
+ visualization framework (like Paraview or Salome) for remote use.
+ .
+ Neos features a generic scenario mechanism and can be extended easily
+ with new scenarios.
  .
  This package should be installed on all nodes (frontends as well as compute
  nodes).
@@ -38,9 +43,13 @@ Depends:
  slurm-llnl-generic-scripts-plugin,
  neos
 Description: Resource reservation scripts through Slurm
- This package contains a set of scripts which allow users to book compute
- resources for graphical rendering using the batch manager Slurm.
+ This package contains a program called Neos which eases the execution
+ of defined sequence of actions on a Slurm cluster. For example,
+ starting a graphical environment for users, prepare and start a
+ visualization framework (like Paraview or Salome) for remote use.
  .
- This package should be installed on all nodes (frontends as well as compute
- nodes). It provides symbolic links to various provided prolog scripts and
- install them using slurm-llnl-generic-scripts-plugin.
+ Neos features a generic scenario mechanism and can be extended easily
+ with new scenarios.
+ .
+ This package contains necessary plumbing in order to plug Neos into an
+ existing Slurm cluster.
