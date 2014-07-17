@@ -9,6 +9,7 @@ neos (0.3) UNRELEASED; urgency=low
     - Gnome, grahical session on a cluster
     - Paraview
     - Salomé, see http://www.salome-platform.org/
+  * Relicense in CeCILL
 
  -- Mehdi Dogguy <mehdi@debian.org>  Thu, 17 Jul 2014 12:43:01 +0200
 
