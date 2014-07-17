@@ -1,8 +1,16 @@
 neos (0.3) UNRELEASED; urgency=low
 
-  * 
+  * Add a generic scenario mechanism which relies on a few actions to be
+    implemented by each scenario: main, srun, task and epilog.
+  * Provide a slurm-llnl-neos-plugin binary package, which depends on
+    slurm-llnl-generic-scripts-plugin to be able to hotplug Neos into an
+    existing Slurm cluster.
+  * Introduce new scenarios:
+    - Gnome, grahical session on a cluster
+    - Paraview
+    - Salomé, see http://www.salome-platform.org/
 
- -- Mehdi Dogguy <mehdi@debian.org>  Wed, 06 Nov 2013 23:52:11 +0100
+ -- Mehdi Dogguy <mehdi@debian.org>  Thu, 17 Jul 2014 12:43:01 +0200
 
 neos (0.3~casanova1) calibre7; urgency=low
 
