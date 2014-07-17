@@ -1,3 +1,3 @@
-usr/share/perl5/Neos/Helpers/neos_task_prolog           usr/lib/slurm/generic-scripts/TaskProlog.d/10_neos_task_prolog
-usr/share/perl5/Neos/Helpers/neos_srun_prolog           usr/lib/slurm/generic-scripts/SrunProlog.d/10_neos_srun_prolog
-usr/share/perl5/Neos/Helpers/neos_epilog                usr/lib/slurm/generic-scripts/Epilog.d/10_neos_epilog
+usr/share/perl5/Neos/Helpers/task_prolog.pl           usr/lib/slurm/generic-scripts/TaskProlog.d/10_neos_task_prolog
+usr/share/perl5/Neos/Helpers/srun_prolog.pl           usr/lib/slurm/generic-scripts/SrunProlog.d/10_neos_srun_prolog
+usr/share/perl5/Neos/Helpers/epilog.pl                usr/lib/slurm/generic-scripts/Epilog.d/10_neos_epilog

@@ -10,8 +10,9 @@ neos (0.3) UNRELEASED; urgency=low
     - Paraview
     - Salomé, see http://www.salome-platform.org/
   * Relicense in CeCILL
+  * Rename Helpers by removing the neos_ prefix and adding a .pl suffix.
 
- -- Mehdi Dogguy <mehdi@debian.org>  Thu, 17 Jul 2014 12:43:01 +0200
+ -- Mehdi Dogguy <mehdi@debian.org>  Thu, 17 Jul 2014 13:08:22 +0200
 
 neos (0.3~casanova1) calibre7; urgency=low
 
