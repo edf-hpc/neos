@@ -6,7 +6,7 @@ neos (0.3) UNRELEASED; urgency=low
     slurm-llnl-generic-scripts-plugin to be able to hotplug Neos into an
     existing Slurm cluster.
   * Introduce new scenarios:
-    - Gnome, grahical session on a cluster
+    - Gnome, graphical session on a cluster
     - Paraview
     - Salomé, see http://www.salome-platform.org/
   * Relicense in CeCILL
