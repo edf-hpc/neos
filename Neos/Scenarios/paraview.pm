@@ -87,14 +87,31 @@ sub paraview_main {
 	print_job_infos ();
     }
 
+    # Run Xvnc (with appropriate parameters)
+    my $xvnc = sprintf(Neos::get_param('cmd'),
+                       Neos::get_display (),
+                       Neos::get_param('default_resolution'),
+                       Neos::get_rfbport ()
+                );
+    my $cmd1 = sprintf("%s > %s 2>&1 &",
+                      $xvnc,
+                      Neos::get_param('x_logfile')
+                );
+
+
     # Run pvserver command
-    my $cmd = sprintf("mpirun -x DISPLAY=:0.0 vglrun -d :0.0 pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
-                      Neos::get_display (),
+    system (sprintf ("echo %s >> %s", Neos::get_ip_pvclient (), Neos::get_param('x_logfile')));
+    my $cmd = sprintf("mpirun -x DISPLAY=:%s pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
+                      $display_number,
+                      $display_number,
 		      Neos::get_ip_pvclient (),
                       Neos::get_param('x_logfile')
+ 
 	);
 
+
     if ($firstnode eq hostname) {
+	system ($cmd1);
 	system ($cmd);
     } else {
 	sleep(1);
@@ -123,7 +140,7 @@ sub paraview_clean {
                  sprintf ("/tmp/.X11-unix/X%s", Neos::get_display())
         );
 
-    unlink @files;
+#    unlink @files;
 
     Neos::kill_program ("pvserver");
     Neos::slurm_terminate_job ();

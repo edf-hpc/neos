@@ -87,16 +87,29 @@ sub salome_main {
 	print_salome_job_infos ();
     }
 
+    # Run Xvnc (with appropriate parameters)
+    my $xvnc = sprintf(Neos::get_param('cmd'),
+                       Neos::get_display (),
+                       Neos::get_param('default_resolution'),
+                       Neos::get_rfbport ()
+                );
+    my $cmd1 = sprintf("%s > %s 2>&1 &",
+                      $xvnc,
+                      Neos::get_param('x_logfile')
+                );
+
     # Run Salome RunSession command
     my $runSession = sprintf("%s/runSession", Neos::get_param1('salome_path'));
-    my $cmd = sprintf("%s mpirun -x DISPLAY=:0.0 vglrun -d :0.0 pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
+    my $cmd = sprintf("%s mpirun -x DISPLAY=:%s pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       $runSession,
-                      Neos::get_display (),
+                      $display_number,
+                      $display_number,
 		      Neos::get_ip_pvclient (),
                       Neos::get_param('x_logfile')
 	);
 
     if ($firstnode eq hostname) {
+        system ($cmd1);
 	system ($cmd);
     } else {
 	sleep(1);
