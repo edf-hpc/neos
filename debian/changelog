@@ -1,3 +1,12 @@
+neos (0.3-1) UNRELEASED; urgency=low
+
+  * Add execution of Xvnc before launching the pvservers in the 
+    Paraview and Salome scenarii.
+  * Modify the mpirun parameters to allow a correct visualization on 
+    the client desktop.
+
+ -- Mehdi Dogguy <mehdi@debian.org>  Wed, 8 Apr 2015 12:00:42 +0200
+
 neos (0.3) UNRELEASED; urgency=low
 
   * Add a generic scenario mechanism which relies on a few actions to be
