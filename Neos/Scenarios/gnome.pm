@@ -67,7 +67,7 @@ sub gnome_main {
     if ($firstnode eq hostname) {
         system (sprintf("DISPLAY=:%s %s >/dev/null 2>&1 &",
                         Neos::get_display (),
-                        Neos::get_param('session_manager')
+                        Neos::get_param('default_session_manager')
                ));
     }
 
