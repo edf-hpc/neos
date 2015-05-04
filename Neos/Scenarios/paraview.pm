@@ -101,8 +101,9 @@ sub paraview_main {
 
     # Run pvserver command
     system (sprintf ("echo %s >> %s", Neos::get_ip_pvclient (), Neos::get_param('x_logfile')));
-    my $cmd = sprintf("mpirun -x DISPLAY=:%s pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
+    my $cmd = sprintf("mpirun -x DISPLAY=:%s %s/bin/pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       $display_number,
+                      $Neos::get_param('paraview_path'),
                       $display_number,
 		      Neos::get_ip_pvclient (),
                       Neos::get_param('x_logfile')
