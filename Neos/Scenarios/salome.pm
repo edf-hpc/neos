@@ -100,9 +100,10 @@ sub salome_main {
 
     # Run Salome RunSession command
     my $runSession = sprintf("%s/runSession", Neos::get_param1('salome_path'));
-    my $cmd = sprintf("%s mpirun -x DISPLAY=:%s pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
+    my $cmd = sprintf("%s mpirun -x DISPLAY=:%s %s/bin/pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       $runSession,
                       $display_number,
+                      Neos::get_param1('salome_path'),
                       $display_number,
 		      Neos::get_ip_pvclient (),
                       Neos::get_param('x_logfile')
