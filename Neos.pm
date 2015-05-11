@@ -230,22 +230,18 @@ sub is_good_partition {
     my @partitions_conf = split /,/, get_param('partitions');
     foreach (@partitions_conf) {
 	s/^\s+|\s+$//g;
+        return 1 if ($partition eq $_);
     }
-    if ($partition ~~ @partitions_conf) {
-	return 1;
-    } else {
-	return 0;
-    }
+    return 0;
 }
 
 sub get_constraint {
     my @constval = ("vncres", "pvserver");
     my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
-    if ($feature ~~ @constval) {
-        return $feature;
-    } else {
-        return $constval[0];
+    foreach (@constval) {
+        return $feature if ($feature eq $_);
     }
+    return $constval[0];
 }
 
 sub get_scenario_name {
