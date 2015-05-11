@@ -52,6 +52,8 @@ use Crypt::GeneratePassword qw(chars); # libcrypt-generatepassword-perl
 use Storable qw(freeze thaw);          # perl-modules
 use File::Slurp qw(read_file write_file); # libfile-slurp-perl
 
+use Data::Dumper;
+
 my $param1 = "";
 
 # Load the Switch..Case construct
@@ -367,6 +369,8 @@ sub print_job_infos {
         $iprin = `grep -w $firstnode /etc/hosts | grep -v 127.0.1.1 | awk '{print \$1}'`;
         chomp($iprin);
     }
+
+    #print Data::Dumper->Dump([$job_infos], [qw(job_infos)]);
 
     my $nodes = "";
     my $hl = nodes_list();
