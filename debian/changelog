@@ -1,4 +1,4 @@
-neos (0.3.1) UNRELEASED; urgency=low
+neos (0.3.1) calibre9; urgency=low
 
   [ Gregory Hernandez ]
   * Add execution of Xvnc before launching the pvservers in the
@@ -14,7 +14,7 @@ neos (0.3.1) UNRELEASED; urgency=low
   * Add a dependency on libswitch-perl.
   * Update neos.conf
 
- -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 May 2015 21:15:06 +0200
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 May 2015 21:17:51 +0200
 
 neos (0.3) UNRELEASED; urgency=low
 
