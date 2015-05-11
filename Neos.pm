@@ -274,6 +274,7 @@ sub get_vncres {
 sub gen_password {
     my $password = chars(8, 8, ["a".."z", "A".."Z", 0..9]);
     my $cmd = sprintf ("$config{'vnc_passwd'} -storepasswd %s %s >>%s 2>&1", $password, $config{'vauthfile'}, $config{'x_logfile'});
+    system($cmd);
     $mdp = $password;
     return $mdp;
 }
