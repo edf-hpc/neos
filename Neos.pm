@@ -271,11 +271,7 @@ sub get_vncres {
 
 sub gen_password {
     my $password = chars(8, 8, ["a".."z", "A".."Z", 0..9]);
-    open (VNCPASS, sprintf("> %s", $config{'vauthfile'}));
-    my $encrypted_text = `echo "$password" | $config{'vnc_passwd'}`;
-    print VNCPASS $encrypted_text;
-    close (VNCPASS);
-    chmod(0600, $config{'vauthfile'});
+    my $cmd = sprintf ("$config{'vnc_passwd'} -storepasswd %s %s >>%s 2>&1", $password, $config{'vauthfile'}, $config{'x_logfile'});
     $mdp = $password;
     return $mdp;
 }
