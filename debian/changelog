@@ -1,11 +1,17 @@
 neos (0.3.1) UNRELEASED; urgency=low
 
-  * Add execution of Xvnc before launching the pvservers in the 
+  [ Gregory Hernandez ]
+  * Add execution of Xvnc before launching the pvservers in the
     Paraview and Salome scenarii.
-  * Modify the mpirun parameters to allow a correct visualization on 
+  * Modify the mpirun parameters to allow a correct visualization on
     the client desktop.
 
- -- Gregory Hernandez <gregory-externe.hernandez@edf.fr>  Wed, 8 Apr 2015 12:00:42 +0200
+  [ Mehdi Dogguy ]
+  * Fix xfce4 scenario.
+  * Do not use ~~ operator
+  * Change gen_password to cope with x11vnc's cli interface
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 May 2015 21:09:36 +0200
 
 neos (0.3) UNRELEASED; urgency=low
 
