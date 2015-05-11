@@ -49,27 +49,49 @@ my $job_partition = Neos::get_partition ();
 my $constraint = Neos::get_constraint ();
 my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
+my $display_number = Neos::get_display ();
 
-sub xfce4_main {
-    # Run Xvnc (with appropriate parameters)
-    my $xvnc = sprintf(Neos::get_param('cmd'),
-                       Neos::get_display (),
-                       Neos::get_param('resolution'),
-                       Neos::get_rfbport ()
-                );
-    my $cmd = sprintf("%s > %s 2>&1 &",
-                      $xvnc,
-                      Neos::get_param('x_logfile')
-                );
-    system ($cmd);
+sub main {
+    # Do not run anything if not run on the firstnode.
+    return unless ($firstnode eq hostname);
 
-    # Launch graphical session
-    if ($firstnode eq hostname) {
-        system (sprintf("%s --display=:%s >/dev/null 2>&1 &",
-                        Neos::get_param('xfce4_session_manager'),
-                        Neos::get_display ()
-               ));
+    # Find out which display to use
+    my $display = Neos::get_display ();
+    if (Neos::get_job_detail('shared') eq 0) {
+        $display = "0";
     }
+
+    # Create auth file
+    my $cookie = `mcookie`;
+    system (sprintf ("xauth -f %s -q add :%s MIT-MAGIC-COOKIE-1 %s >/dev/null 2>&1",
+        Neos::get_param('xauthfile'),
+        $display,
+        $cookie));
+
+    # Xvfb
+    my $cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s >>%s 2>&1 &",
+                       $display,
+                       Neos::get_param('resolution'),
+                       Neos::get_param('xauthfile'),
+                       Neos::get_param('x_logfile')
+               );
+    system ($cmd) unless ($display eq 0);
+
+    # Start graphical session
+    system (sprintf ("DISPLAY=:%s XAUTHORITY=%s dbus-launch --exit-with-session xfce4-session >>%s 2>&1 &",
+                     $display,
+                     Neos::get_param('xauthfile'),
+                     Neos::get_param('x_logfile')
+             ));
+
+    sleep(1);
+
+    # Run x11vnc (with appropriate parameters)
+    system (sprintf (Neos::get_param('cmd'),
+                     Neos::get_param('resolution'),
+                     $display,
+                     Neos::get_rfbport ()
+             ));
 
     # Print information about the present job (Only in "BATCH" mode)
     if ($ENV{'ENVIRONMENT'} eq "BATCH") {
@@ -80,17 +102,18 @@ sub xfce4_main {
     # killed or walltime is reached.
     Neos::wait_for_process(Neos::get_param("vnc_x"));
     Neos::kill_program (Neos::get_param("vnc_x"));
+    Neos::kill_program ("Xvfb");
     Neos::slurm_terminate_job ();
 }
 
-sub xfce4_srun {
+sub srun {
     # Print information about the present job (When not in "BATCH" mode)
     if ($ENV{'ENVIRONMENT'} ne "BATCH") {
         Neos::print_job_infos (Neos::get_param('password'));
     }
 }
 
-sub xfce4_clean {
+sub clean {
     my @files = (Neos::get_param('vauthfile'),
                  Neos::get_param('xauthfile'),
                  Neos::get_param('ip_pvclient'),
@@ -102,10 +125,11 @@ sub xfce4_clean {
     unlink @files;
 
     Neos::kill_program (Neos::get_param("vnc_x"));
+    Neos::kill_program ("Xvfb");
 }
 
-Neos::insert_action('main', \&xfce4_main);
-Neos::insert_action('srun', \&xfce4_srun);
-Neos::insert_action('epilog', \&xfce4_clean);
+Neos::insert_action('main', \&main);
+Neos::insert_action('srun', \&srun);
+Neos::insert_action('epilog', \&clean);
 
 1;
