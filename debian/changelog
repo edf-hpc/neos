@@ -8,11 +8,13 @@ neos (0.3.1) UNRELEASED; urgency=low
 
   [ Mehdi Dogguy ]
   * Fix xfce4 scenario.
+  * Fix gnome scenario.
   * Do not use ~~ operator
   * Change gen_password to cope with x11vnc's cli interface
   * Add a dependency on libswitch-perl.
+  * Update neos.conf
 
- -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 May 2015 21:09:36 +0200
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 May 2015 21:15:06 +0200
 
 neos (0.3) UNRELEASED; urgency=low
 
