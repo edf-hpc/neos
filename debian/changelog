@@ -10,6 +10,7 @@ neos (0.3.1) UNRELEASED; urgency=low
   * Fix xfce4 scenario.
   * Do not use ~~ operator
   * Change gen_password to cope with x11vnc's cli interface
+  * Add a dependency on libswitch-perl.
 
  -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 11 May 2015 21:09:36 +0200
 

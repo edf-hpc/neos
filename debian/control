@@ -20,6 +20,7 @@ Depends:
  libfile-slurp-perl,
  libfile-chmod-perl,
  libconfig-general-perl,
+ libswitch-perl,
  libslurm-perl,
  libcrypt-generatepassword-perl
 Description: Resource reservation scripts through Slurm
