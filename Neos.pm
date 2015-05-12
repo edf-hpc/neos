@@ -237,15 +237,6 @@ sub is_good_partition {
     return 0;
 }
 
-sub get_constraint {
-    my @constval = ("vncres", "pvserver");
-    my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
-    foreach (@constval) {
-        return $feature if ($feature eq $_);
-    }
-    return $constval[0];
-}
-
 sub get_scenario_name {
     my ($scenario) = do { @_ ? shift : "" };
     if ($scenario ne "") {
