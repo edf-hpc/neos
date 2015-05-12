@@ -384,12 +384,12 @@ sub print_job_infos {
         <nodes>
 $nodes
         </nodes>
-        <vncserver>
+        <config>
                 <node>$firstnode</node>
                 <ipaddress>$iprin</ipaddress>
                 <session>$rfbport</session>
                 <password>$mdp</password>
-        </vncserver>
+        </config>
         <enddatetime>$daylimit</enddatetime>
         <pid>$jobid</pid>
 </$job_partition>

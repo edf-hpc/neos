@@ -50,41 +50,9 @@ my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
 my $display_number = Neos::get_display ();
 
-sub print_salome_job_infos() {
-    my $daylimit = Neos::get_job_daylimit ();
-
-    my $iprin;
-    chomp($iprin = `grep rin$firstnode /etc/hosts | awk '{print \$1}'`);
-    if ($iprin eq '') {
-        $iprin = `grep -w $firstnode /etc/hosts | grep -v 127.0.1.1 | awk '{print \$1}'`;
-        chomp($iprin);
-    }
-
-    my $nodes = "";
-    my $hl = Neos::nodes_list();
-    while(my $host = $hl->shift()) {
-	$nodes .= "                <node>$host</node>\n";
-    }
-    chomp($nodes);
-    print <<MESSAGE;
-<$job_partition>
-        <nodes>
-$nodes
-        </nodes>
-        <salome_server>
-                <node>$firstnode</node>
-                <ipaddress>$iprin</ipaddress>
-                <port>$display_number</port>
-        </salome_server>
-        <enddatetime>$daylimit</enddatetime>
-        <pid>$Neos::jobid</pid>
-</$job_partition>
-MESSAGE
-}
-
 sub salome_main {
     if ($ENV{'ENVIRONMENT'} eq "BATCH") {
-	print_salome_job_infos ();
+	Neos::print_job_infos ();
     }
 
     # Run Xvnc (with appropriate parameters)
@@ -126,7 +94,7 @@ sub salome_main {
 sub salome_srun {
     # Print information about the present job (When not in "BATCH" mode)
     if ($ENV{'ENVIRONMENT'} ne "BATCH") {
-	print_salome_job_infos ();
+	Neos::print_job_infos ();
     }
 }
 
