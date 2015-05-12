@@ -1,3 +1,13 @@
+neos (0.3.3) calibre9; urgency=low
+
+  * Simplify Salome scenario
+  * Simplify Paraview scenario
+  * Use default_resolution instead of vncres specified via a constraint
+  * Add Neos::clean_generated_files and use it by default
+  * Print more generic output on job start
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Tue, 12 May 2015 16:13:56 +0200
+
 neos (0.3.2) calibre9; urgency=low
 
   * Fix gen_password in Neos.pm
