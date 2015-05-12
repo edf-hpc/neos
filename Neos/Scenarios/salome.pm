@@ -47,41 +47,35 @@ Neos::load_config();
 my $job_partition = Neos::get_partition ();
 my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
-my $display_number = Neos::get_display ();
 
 sub salome_main {
+    return unless ($firstnode eq hostname);
+
     if ($ENV{'ENVIRONMENT'} eq "BATCH") {
 	Neos::print_job_infos ();
     }
 
-    # Run Xvnc (with appropriate parameters)
-    my $xvnc = sprintf(Neos::get_param('cmd'),
-                       Neos::get_display (),
-                       Neos::get_param('default_resolution'),
-                       Neos::get_rfbport ()
-                );
-    my $cmd1 = sprintf("%s > %s 2>&1 &",
-                      $xvnc,
-                      Neos::get_param('x_logfile')
-                );
+    my $display = Neos::get_display ();
+    my $vglrun = "vglrun -display :0";
+    if (Neos::get_job_detail('shared') eq 0) {
+       $display = "0";
+       $vglrun = "";
+    }
 
-    # Run Salome RunSession command
+    # Run pvserver command
     my $runSession = sprintf("%s/runSession", Neos::get_param1('salome_path'));
-    my $cmd = sprintf("%s mpirun -x DISPLAY=:%s %s/bin/pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
+    my $cmd = sprintf("%s mpirun -x DISPLAY=:%s %s %s/bin/pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
                       $runSession,
-                      $display_number,
-                      Neos::get_param1('salome_path'),
-                      $display_number,
-		      Neos::get_ip_pvclient (),
+                      $display,
+                      $vglrun,
+                      Neos::get_param('salome_path'),
+                      $display,
+                      Neos::get_ip_pvclient (),
                       Neos::get_param('x_logfile')
 	);
 
-    if ($firstnode eq hostname) {
-        system ($cmd1);
-	system ($cmd);
-    } else {
-	sleep(1);
-    }
+
+    system ($cmd);
 
     # Monitor status of the paraview process, and exit as soon as it is
     # killed or walltime is reached. Same as for Xvnc...
@@ -99,7 +93,6 @@ sub salome_srun {
 
 sub salome_clean {
     Neos::kill_program ("pvserver");
-    Neos::slurm_terminate_job ();
 }
 
 Neos::insert_action('main', \&salome_main);
