@@ -101,18 +101,7 @@ sub paraview_srun {
 }
 
 sub paraview_clean {
-    my @files = (Neos::get_param('vauthfile'),
-                 Neos::get_param('xauthfile'),
-                 Neos::get_param('ip_pvclient'),
-                 Neos::get_param('x_logfile'),
-                 sprintf ("/tmp/.X%s-lock", Neos::get_display()),
-                 sprintf ("/tmp/.X11-unix/X%s", Neos::get_display())
-        );
-
-#    unlink @files;
-
     Neos::kill_program ("pvserver");
-    Neos::slurm_terminate_job ();
 }
 
 Neos::insert_action('main', \&paraview_main);

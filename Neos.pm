@@ -314,6 +314,18 @@ sub get_job_daylimit {
     return $res;
 }
 
+sub clean_generated_files {
+    my @files = (get_param('vauthfile'),
+                 get_param('xauthfile'),
+                 get_param('ip_pvclient'),
+                 get_param('x_logfile'),
+                 sprintf ("/tmp/.X%s-lock", get_display()),
+                 sprintf ("/tmp/.X11-unix/X%s", get_display())
+        );
+
+    unlink @files;
+}
+
 sub get_program_pid {
     my ($program) = @_;
     my $pid_cmd = sprintf("ps aux | egrep $program | grep -v grep | grep %s | awk '{print \$2}'",

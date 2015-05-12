@@ -114,16 +114,6 @@ sub srun {
 }
 
 sub clean {
-    my @files = (Neos::get_param('vauthfile'),
-                 Neos::get_param('xauthfile'),
-                 Neos::get_param('ip_pvclient'),
-                 Neos::get_param('x_logfile'),
-                 sprintf ("/tmp/.X%s-lock", Neos::get_display()),
-                 sprintf ("/tmp/.X11-unix/X%s", Neos::get_display())
-        );
-
-    unlink @files;
-
     Neos::kill_program (Neos::get_param("vnc_x"));
     Neos::kill_program ("Xvfb");
 }
