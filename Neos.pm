@@ -252,16 +252,6 @@ sub get_scenario_name {
     }
 }
 
-sub get_vncres {
-    my ($feature, $level) = split(/:/, get_job_detail ('features'), 2);
-    switch ($level) {
-        case 1 { return "1280x1024" }
-        case 2 { return "1680x1050" }
-        case 3 { return "1920x1200" }
-        else   { return "1024x768"  }
-    }
-}
-
 sub gen_password {
     my $password = chars(8, 8, ["a".."z", "A".."Z", 0..9]);
     my $cmd = sprintf ("$config{'vnc_passwd'} -storepasswd %s %s >>%s 2>&1", $password, $config{'vauthfile'}, $config{'x_logfile'});

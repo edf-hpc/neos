@@ -43,7 +43,7 @@ use Switch;
 
 # Job parameters
 my $job_partition = Neos::get_partition ();
-my $resolution = Neos::get_vncres ();
+my $resolution = Neos::get_default_resolution ();
 my $scenario = "";
 my $result = GetOptions ("resolution=s" => \$resolution,
                          "param1=s"     => \$Neos::param1,
