@@ -48,5 +48,4 @@ if (Neos::is_good_partition($job_partition)) {
 
     Neos::load_scenario(Neos::get_param('scenario'));
     Neos::run_action('epilog');
-    Neos::slurm_terminate_job ();
 }
