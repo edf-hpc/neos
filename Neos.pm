@@ -300,6 +300,7 @@ sub clean_generated_files {
                  get_param('xauthfile'),
                  get_param('ip_pvclient'),
                  get_param('x_logfile'),
+                 get_config_job_file(),
                  sprintf ("/tmp/.X%s-lock", get_display()),
                  sprintf ("/tmp/.X11-unix/X%s", get_display())
         );
