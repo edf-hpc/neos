@@ -121,7 +121,6 @@ sub main {
     my $finished = 0;
     do {
         $finished++ if (waitpid($pvserver_pid, WNOHANG) < 0);
-        $finished++ if (waitpid($x_pid, WNOHANG) < 0);
     } while ($finished eq 0);
 
     kill 'TERM', @pids;
