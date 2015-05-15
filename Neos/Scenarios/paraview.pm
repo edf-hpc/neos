@@ -37,23 +37,26 @@
 package Neos::Scenarios;
 
 # Be good
-use strict;
+#use strict;
+
+use POSIX ":sys_wait_h";
 use Sys::Hostname;
 use Neos;;
 
 Neos::load_config();
 
 # Job parameters
-my $job_partition = Neos::get_partition ();
-my $hostlist = Neos::host_list ();
 my $firstnode = Neos::first_node ();
 
-sub paraview_main {
+sub main {
     return unless ($firstnode eq hostname);
 
-    if ($ENV{'ENVIRONMENT'} eq "BATCH") {
-	Neos::print_job_infos ();
-    }
+    my $x_logfile = Neos::get_param('x_logfile');
+
+    # General parameters
+    my @pids;
+    my $xauth_file = Neos::get_param('xauthfile');
+    my $x_logfile = Neos::get_param('x_logfile');
 
     my $display = Neos::get_display ();
     my $vglrun = "vglrun -display :0";
@@ -62,39 +65,77 @@ sub paraview_main {
        $vglrun = "";
     }
 
+    # Create auth file
+    my $cookie = `mcookie`;
+    open HANDLE, ">>$xauth_file";
+    close HANDLE;
+    my $xauth_cmd = sprintf ("xauth -f %s -q add :%s MIT-MAGIC-COOKIE-1 %s >/dev/null 2>&1",
+                             $xauth_file,
+                             $display,
+                             $cookie
+        );
+    system($xauth_cmd);
+
+    open STDOUT, '>$x_logfile';
+    open STDERR, '>&STDOUT';
+
+    # Xvfb
+    my $x_cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s",
+                         $display,
+                         Neos::get_param('resolution'),
+                         $xauth_file
+        );
+    my $x_pid;
+    if ($x_pid = fork) {
+        push(@pids, $x_pid);
+        Neos::set_param('x_pid', $x_pid);
+    } else {
+        exec $x_cmd unless ($display eq 0);
+        do {
+            sleep(1);
+        } while (1 eq 1);
+    }
+
     # Run pvserver command
-    my $cmd = sprintf("mpirun -x DISPLAY=:%s %s %s/bin/pvserver --connect-id=%s -rc -ch=%s >>%s 2>&1 &",
+    my $cmd = sprintf("mpirun -x DISPLAY=:%s %s %s/bin/pvserver --connect-id=%s -rc -ch=%s",
                       $display,
                       $vglrun,
                       Neos::get_param('paraview_path'),
                       $display,
-                      Neos::get_ip_pvclient (),
-                      Neos::get_param('x_logfile')
+                      Neos::get_ip_pvclient ()
 	);
 
+    my $pvserver_pid;
+    if ($pvserver_pid = fork) {
+        push(@pids, $pvserver_pid);
+        Neos::set_param('pvserver_pid', $pvserver_pid);
+    } else {
+        exec $cmd;
+    }
 
-    system ($cmd);
+    # Force re-dump to store newly created PIDs
+    Neos::force_dump_config ();
 
-    # Monitor status of the paraview process, and exit as soon as it is
-    # killed or walltime is reached. Same as for Xvnc...
-    Neos::wait_for_process("pvserver");
-    Neos::kill_program ("pvserver");
-    Neos::slurm_terminate_job ();
+    # Monitor status of the Xvnc process, and exit as soon as it is
+    # killed or walltime is reached.
+    my $finished = 0;
+    do {
+        $finished++ if (waitpid($pvserver_pid, WNOHANG) < 0);
+        $finished++ if (waitpid($x_pid, WNOHANG) < 0);
+    } while ($finished eq 0);
+
+    kill 'TERM', @pids;
 }
 
-sub paraview_srun {
-    # Print information about the present job (When not in "BATCH" mode)
-    if ($ENV{'ENVIRONMENT'} ne "BATCH") {
-	Neos::print_job_infos ();
+sub clean {
+    use Scalar::Util qw(looks_like_number);
+    my @pids = (Neos::get_param('pvserver_pid'), Neos::get_param('x_pid'));
+    foreach my $pid (@pids) {
+        kill 'TERM', $pid if (looks_like_number($pid));
     }
 }
 
-sub paraview_clean {
-    Neos::kill_program ("pvserver");
-}
-
-Neos::insert_action('main', \&paraview_main);
-Neos::insert_action('srun', \&paraview_srun);
-Neos::insert_action('epilog', \&paraview_clean);
+Neos::insert_action('main', \&main);
+Neos::insert_action('epilog', \&clean);
 
 1;

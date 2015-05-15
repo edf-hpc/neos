@@ -313,40 +313,6 @@ sub clean_generated_files {
     unlink @files;
 }
 
-sub get_program_pid {
-    my ($program) = @_;
-    my $pid_cmd = sprintf("ps aux | egrep $program | grep -v grep | grep %s | awk '{print \$2}'",
-	get_display ());
-    my $pid = `$pid_cmd`;
-    chomp($pid);
-    return $pid;
-}
-
-sub kill_program {
-    my ($program) = @_;
-    my $pid = get_program_pid ($program);
-    if ($pid ne "") {
-        kill 9, $pid;
-    }
-}
-
-sub wait_for_process {
-    my ($program) = @_;
-    my $pid = get_program_pid ($program);
-    my $end_time = get_job_endtime ();
-    my $now = `date +%s`;
-    while ($end_time - 30 > $now) {
-        if ($pid ne "") {
-            system("ps -p $pid >/dev/null");
-            if ($? != 0) {
-                print "Neos(error): $program disappeared... exiting!\n";
-                last;
-            }
-        }
-        sleep(10);
-    }
-}
-
 sub slurm_terminate_job {
     my $job_id = $ENV{'SLURM_JOB_ID'};
     if ($job_id ne "") {

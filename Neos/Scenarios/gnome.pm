@@ -37,22 +37,17 @@
 package Neos::Scenarios;
 
 # Be good
-use strict;
+#use strict;
 
+use POSIX ":sys_wait_h";
 use Sys::Hostname;
 use Neos;;
 
 Neos::load_config($Neos::config_dump);
 
-# Job parameters
-my $job_partition = Neos::get_partition ();
-my $hostlist = Neos::host_list ();
-my $firstnode = Neos::first_node ();
-my $display_number = Neos::get_display ();
-
 sub main {
     # Do not run anything if not run on the firstnode.
-    return unless ($firstnode eq hostname);
+    return unless (Neos::first_node () eq hostname);
 
     # Find out which display to use
     my $display = Neos::get_display ();
@@ -60,49 +55,88 @@ sub main {
         $display = "0";
     }
 
+    # General parameters
+    my @pids;
+    my $xauth_file = Neos::get_param('xauthfile');
+    my $x_logfile = Neos::get_param('x_logfile');
+
     # Create auth file
     my $cookie = `mcookie`;
-    system (sprintf ("xauth -f %s -q add :%s MIT-MAGIC-COOKIE-1 %s >/dev/null 2>&1",
-        Neos::get_param('xauthfile'),
-        $display,
-        $cookie));
-
-    # Xvfb
-    my $cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s >>%s 2>&1 &",
-                       $display,
-                       Neos::get_param('resolution'),
-                       Neos::get_param('xauthfile'),
-                       Neos::get_param('x_logfile')
-               );
-    system ($cmd) unless ($display eq 0);
-
-    # Start graphical session
-    system (sprintf ("DISPLAY=:%s XAUTHORITY=%s dbus-launch --exit-with-session gnome-session >>%s 2>&1 &",
-                     $display,
-                     Neos::get_param('xauthfile'),
-                     Neos::get_param('x_logfile')
-             ));
-
-    sleep(1);
-
-    # Run x11vnc (with appropriate parameters)
-    system (sprintf (Neos::get_param('cmd'),
-                     Neos::get_param('resolution'),
-                     $display,
-                     Neos::get_rfbport ()
-             ));
+    open HANDLE, ">>$xauth_file";
+    close HANDLE;
+    my $xauth_cmd = sprintf ("xauth -f %s -q add :%s MIT-MAGIC-COOKIE-1 %s >/dev/null 2>&1",
+                             $xauth_file,
+                             $display,
+                             $cookie
+        );
+    system($xauth_cmd);
 
     # Print information about the present job (Only in "BATCH" mode)
     if ($ENV{'ENVIRONMENT'} eq "BATCH") {
         Neos::print_job_infos (Neos::get_param('password'));
     }
 
+    open STDOUT, '>>$x_logfile';
+    open STDERR, '>&STDOUT';
+
+    # Xvfb
+    my $x_cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s",
+                         $display,
+                         Neos::get_param('resolution'),
+                         Neos::get_param('xauthfile')
+        );
+    my $x_pid;
+    if ($x_pid = fork) {
+        push(@pids, $x_pid);
+        Neos::set_param('x_pid', $x_pid);
+    } else {
+        exec $x_cmd unless ($display eq 0);
+        do {
+            sleep (1);
+        } while (1 eq 1);
+    }
+
+    # Start graphical session
+    my $session_cmd = "dbus-launch --exit-with-session gnome-session";
+    my $session_pid;
+    if ($session_pid = fork) {
+        push(@pids, $session_pid);
+        Neos::set_param('session_pid', $session_pid);
+    } else {
+        $ENV{DISPLAY} = sprintf (":%s", $display);
+        $ENV{XAUTHORITY} = Neos::get_param('xauthfile');
+        exec $session_cmd;
+    }
+
+    sleep(1);
+
+    # Run x11vnc (with appropriate parameters)
+    my $vnc_cmd = sprintf (Neos::get_param('cmd'),
+                           Neos::get_param('resolution'),
+                           $display,
+                           Neos::get_rfbport ()
+        );
+    my $vnc_pid;
+    if ($vnc_pid = fork) {
+        push(@pids, $vnc_pid);
+        Neos::set_param('vnc_pid', $vnc_pid);
+    } else {
+        exec $vnc_cmd;
+    }
+
+    # Force re-dump to store newly created PIDs
+    Neos::force_dump_config ();
+
     # Monitor status of the Xvnc process, and exit as soon as it is
     # killed or walltime is reached.
-    Neos::wait_for_process(Neos::get_param("vnc_x"));
-    Neos::kill_program (Neos::get_param("vnc_x"));
-    Neos::kill_program ("Xvfb");
-    Neos::slurm_terminate_job ();
+    my $finished = 0;
+    do {
+        $finished++ if (waitpid($session_pid, WNOHANG) < 0);
+        $finished++ if (waitpid($vnc_pid, WNOHANG) < 0);
+        $finished++ if (waitpid($x_pid, WNOHANG) < 0);
+    } while ($finished eq 0);
+
+    kill 'TERM', @pids;
 }
 
 sub srun {
@@ -113,8 +147,11 @@ sub srun {
 }
 
 sub clean {
-    Neos::kill_program (Neos::get_param("vnc_x"));
-    Neos::kill_program ("Xvfb");
+    use Scalar::Util qw(looks_like_number);
+    my @pids = (Neos::get_param('vnc_pid'), Neos::get_param('session_pid'), Neos::get_param('x_pid'));
+    foreach my $pid (@pids) {
+        kill 'TERM', $pid if (looks_like_number($pid));
+    }
 }
 
 Neos::insert_action('main', \&main);
