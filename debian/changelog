@@ -1,3 +1,15 @@
+neos (0.4.0) calibre9; urgency=low
+
+  * Better code to track launched programs
+  * Do not call $vnc with both --forever and -once
+  * Generated files should be deleted _after_ scenario's action has been executed
+  * Add Neos::force_dump_config
+  * Epilog script should be run in SrunEpilog phase too
+  * scancel'ing the job during the epilog is useless
+  * Remove config dump at the end of the job
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 15 May 2015 19:41:10 +0200
+
 neos (0.3.3) calibre9; urgency=low
 
   * Simplify Salome scenario
