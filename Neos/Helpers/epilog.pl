@@ -44,8 +44,8 @@ Neos::load_config();
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
 
-    Neos::clean_generated_files ();
-
     Neos::load_scenario(Neos::get_param('scenario'));
     Neos::run_action('epilog');
+
+    Neos::clean_generated_files ();
 }
