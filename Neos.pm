@@ -111,6 +111,11 @@ sub dump_config {
     }
 }
 
+sub force_dump_config {
+    unlink (get_config_job_file());
+    dump_config (get_config_job_file());
+}
+
 sub load_config {
     my $file = do { @_ ? shift : get_config_job_file() };
     if (-e $file) {
