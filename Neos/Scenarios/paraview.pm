@@ -120,6 +120,7 @@ sub main {
     # killed or walltime is reached.
     my $finished = 0;
     do {
+        sleep (1);
         $finished++ if (waitpid($pvserver_pid, WNOHANG) < 0);
     } while ($finished eq 0);
 

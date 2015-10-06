@@ -131,6 +131,7 @@ sub main {
     # killed or walltime is reached.
     my $finished = 0;
     do {
+        sleep (1);
         $finished++ if (waitpid($session_pid, WNOHANG) < 0);
         $finished++ if (waitpid($vnc_pid, WNOHANG) < 0);
         $finished++ if (waitpid($x_pid, WNOHANG) < 0);
