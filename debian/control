@@ -7,8 +7,8 @@ Build-Depends-Indep:
  perl (>= 5.10)
 Standards-Version: 3.9.3
 Section: devel
-Vcs-Browser: http://clay08ib.cla.edfgdf.fr/ccn-hpc-svn/iq/scripts/neos
-Vcs-Svn: http://clay08ib.cla.edfgdf.fr/ccn-hpc-svn/iq/scripts/neos
+Vcs-Browser: https://github.com/edf-hpc/neos
+Vcs-Git: https://github.com/edf-hpc/neos.git
 
 Package: neos
 Architecture: all
