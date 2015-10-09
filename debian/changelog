@@ -1,3 +1,9 @@
+neos (0.4.3~c7+1) calibre7; urgency=low
+
+  * Backport to Calibre 7.
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 09 Oct 2015 10:20:16 +0200
+
 neos (0.4.2) calibre9; urgency=low
 
   * Neos has moved to Github
