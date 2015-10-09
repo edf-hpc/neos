@@ -1,9 +1,9 @@
-neos (0.4.2) UNRELEASED; urgency=low
+neos (0.4.2) calibre9; urgency=low
 
   * Neos has moved to Github
   * Add a sleep(1) when busy-wait for forked processes to terminate.
 
- -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Tue, 06 Oct 2015 09:38:31 +0200
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 09 Oct 2015 10:19:29 +0200
 
 neos (0.4.1) calibre9; urgency=low
 
