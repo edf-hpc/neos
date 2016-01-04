@@ -282,7 +282,7 @@ sub get_ip_pvclient {
 my $magic_number = 59530;
 
 sub get_rfbport {
-    return ($ENV{'SLURM_JOB_ID'} % $magic_number + 1);
+    return ($ENV{'SLURM_JOB_ID'} % $magic_number + 1024);
 }
 
 sub get_display {

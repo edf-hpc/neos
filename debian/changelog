@@ -1,3 +1,9 @@
+neos (0.4.3) calibre9; urgency=low
+
+  * rfbport should be >= 1024 (Issue: #1).
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 04 Jan 2016 13:16:58 +0100
+
 neos (0.4.2) calibre9; urgency=low
 
   * Neos has moved to Github
