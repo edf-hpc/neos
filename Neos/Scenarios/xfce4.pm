@@ -82,7 +82,7 @@ sub main {
     # Xvfb
     my $x_cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s",
                          $display,
-                         Neos::get_param('resolution'),
+                         Neos::get_resolution(),
                          Neos::get_param('xauthfile')
         );
     my $x_pid;
@@ -112,7 +112,7 @@ sub main {
 
     # Run x11vnc (with appropriate parameters)
     my $vnc_cmd = sprintf (Neos::get_param('cmd'),
-                           Neos::get_param('resolution'),
+                           Neos::get_resolution(),
                            $display,
                            Neos::get_rfbport ()
         );

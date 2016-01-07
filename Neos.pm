@@ -156,6 +156,15 @@ sub get_default_resolution {
     return get_param('default_resolution');
 }
 
+sub get_resolution {
+    my $res = get_param('resolution');
+    if ($res eq "") {
+        return get_default_resolution();
+    } else {
+        return $res;
+    }
+}
+
 # Scenario actions: main, srun, task, epilog
 sub get_default_scenario {
     return get_param('default_scenario');

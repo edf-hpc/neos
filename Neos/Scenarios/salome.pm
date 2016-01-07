@@ -82,7 +82,7 @@ sub main {
     # Xvfb
     my $x_cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s",
                          $display,
-                         Neos::get_param('resolution'),
+                         Neos::get_resolution(),
                          $xauth_file
         );
     my $x_pid;
