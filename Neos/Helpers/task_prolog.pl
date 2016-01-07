@@ -46,7 +46,7 @@ if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
 
     if (Neos::get_job_detail('shared') eq 0) {
-        my $cmd = sprintf("xrandr --fb %s", Neos::get_resolution());
+        my $cmd = sprintf("xrandr -d :0 --fb %s", Neos::get_resolution());
         system($cmd);
     }
 

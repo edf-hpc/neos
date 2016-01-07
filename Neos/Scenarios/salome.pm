@@ -50,7 +50,7 @@ my $firstnode = Neos::first_node ();
 
 sub main {
     if (Neos::get_job_detail('shared') eq 0) {
-        system("xrandr --fb 4096x4096");
+        system("xrandr -d :0 --fb 4096x4096");
     }
 
     return unless ($firstnode eq hostname);
