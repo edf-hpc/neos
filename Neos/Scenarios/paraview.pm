@@ -49,6 +49,10 @@ Neos::load_config();
 my $firstnode = Neos::first_node ();
 
 sub main {
+    if (Neos::get_job_detail('shared') eq 0) {
+        system("xrandr --fb 4096x4096");
+    }
+
     return unless ($firstnode eq hostname);
 
     my $x_logfile = Neos::get_param('x_logfile');
