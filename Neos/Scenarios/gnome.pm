@@ -76,7 +76,7 @@ sub main {
         Neos::print_job_infos (Neos::get_param('password'));
     }
 
-    open STDOUT, '>>$x_logfile';
+    open STDOUT, ">>$x_logfile";
     open STDERR, '>&STDOUT';
 
     # Xvfb

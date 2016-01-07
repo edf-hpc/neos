@@ -80,7 +80,7 @@ sub main {
         );
     system($xauth_cmd);
 
-    open STDOUT, '>$x_logfile';
+    open STDOUT, ">$x_logfile";
     open STDERR, '>&STDOUT';
 
     # Xvfb
