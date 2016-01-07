@@ -45,6 +45,11 @@ my $job_partition = Neos::get_partition ();
 if (Neos::is_good_partition($job_partition)) {
     Neos::init ();
 
+    if (Neos::get_job_detail('shared') eq 0) {
+        my $cmd = sprintf("xrandr --fb %s", Neos::get_resolution());
+        system($cmd);
+    }
+
     Neos::load_scenario(Neos::get_scenario_name ());
     Neos::run_action('task');
 }
