@@ -50,11 +50,6 @@ if (Neos::is_good_partition($job_partition)) {
 	Neos::dump_config();
     }
 
-    if (Neos::get_job_detail('shared') eq 0) {
-        my $cmd = sprintf("xrandr --fb %s", Neos::get_resolution());
-        system($cmd);
-    }
-
     Neos::store_ip_pvclient ();
 
     Neos::load_scenario(Neos::get_scenario_name ());
