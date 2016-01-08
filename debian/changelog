@@ -1,8 +1,18 @@
 neos (0.4.3) calibre9; urgency=low
 
-  * rfbport should be >= 1024 (Issue: #1).
+  * rfbport should be >= 1024 (Fixes: #1)
+  * Set a high resolution for exclusive paraview job (Fixes: #3)
+  * Set default resolution at the start of the job (Fixes: #2)
+  * Use double quotes so that inner variable is interpreted
+  * Specify display when calling xrandr
+  * Set resolution for exclusive graphical sessions too using xrandr
+  * Take into account users preferences
+  * Simplify handling of param1 parameter
+  * Do not overwrite already loaded configuration
+  * Let user specify X resolution if necessary for Paraview and Salomé
+    scenarios.
 
- -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Mon, 04 Jan 2016 13:16:58 +0100
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 08 Jan 2016 17:57:41 +0100
 
 neos (0.4.2) calibre9; urgency=low
 
