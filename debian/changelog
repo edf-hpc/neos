@@ -12,7 +12,7 @@ neos (0.4.3) calibre9; urgency=low
   * Let user specify X resolution if necessary for Paraview and Salomé
     scenarios.
 
- -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 08 Jan 2016 17:57:41 +0100
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Fri, 08 Jan 2016 18:10:51 +0100
 
 neos (0.4.2) calibre9; urgency=low
 
