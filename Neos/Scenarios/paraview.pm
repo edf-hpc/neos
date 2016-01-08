@@ -104,7 +104,7 @@ sub main {
     my $cmd = sprintf("mpirun -x DISPLAY=:%s %s %s/bin/pvserver --connect-id=%s -rc -ch=%s",
                       $display,
                       $vglrun,
-                      Neos::get_param('paraview_path'),
+                      Neos::get_param1('paraview_path'),
                       $display,
                       Neos::get_ip_pvclient ()
 	);
