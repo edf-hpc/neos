@@ -43,8 +43,6 @@ use POSIX ":sys_wait_h";
 use Sys::Hostname;
 use Neos;;
 
-Neos::load_config();
-
 # Job parameters
 my $firstnode = Neos::first_node ();
 

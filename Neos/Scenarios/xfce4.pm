@@ -43,8 +43,6 @@ use POSIX ":sys_wait_h";
 use Sys::Hostname;
 use Neos;;
 
-Neos::load_config($Neos::config_dump);
-
 sub main {
     # Do not run anything if not run on the firstnode.
     return unless (Neos::first_node () eq hostname);
