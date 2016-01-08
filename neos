@@ -45,8 +45,9 @@ use Switch;
 my $job_partition = Neos::get_partition ();
 my $resolution = Neos::get_default_resolution ();
 my $scenario = "";
+my $param1 = "";
 my $result = GetOptions ("resolution=s" => \$resolution,
-                         "param1=s"     => \$Neos::param1,
+                         "param1=s"     => \$param1,
                          "scenario=s"   => \$scenario,
                          "config=s"     => \&Neos::config_file_handler,
 );
@@ -54,6 +55,7 @@ my $result = GetOptions ("resolution=s" => \$resolution,
 # Save user specified configuration (cli options and .conf file content)
 Neos::set_param('resolution', $resolution);
 Neos::set_param('scenario', Neos::get_scenario_name ($scenario));
+Neos::set_param('param1', $param1);
 if ($ENV{'ENVIRONMENT'} eq "BATCH") {
     Neos::set_param('password', Neos::gen_password ());
 }

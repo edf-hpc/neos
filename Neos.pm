@@ -54,8 +54,6 @@ use File::Slurp qw(read_file write_file); # libfile-slurp-perl
 
 use Data::Dumper;
 
-my $param1 = "";
-
 # Load the Switch..Case construct
 use Switch;
 
@@ -139,8 +137,8 @@ sub get_param {
 
 sub get_param1 {
     my ($default) = @_;
-    if ($param1 ne "") {
-	return $param1;
+    if (exists($config{param1}) && $config{param1} ne "") {
+	return $config{param1};
     } else {
 	return get_param($default);
     }
