@@ -90,7 +90,11 @@ sub main {
         push(@pids, $x_pid);
         Neos::set_param('x_pid', $x_pid);
     } else {
-        exec $x_cmd unless ($display eq 0);
+        if ($display eq 0) {
+            system(sprintf("xrandr -d :0 --fb %s", Neos::get_resolution()));
+        } else {
+            exec $x_cmd;
+        }
         do {
             sleep (1);
         } while (1 eq 1);
