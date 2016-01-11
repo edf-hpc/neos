@@ -155,9 +155,11 @@ sub get_default_resolution {
 }
 
 sub get_resolution {
+    my ($default) = @_;
+    $default = get_default_resolution() if ($default eq "");
     my $res = get_param('resolution');
     if ($res eq "") {
-        return get_default_resolution();
+        return $default;
     } else {
         return $res;
     }

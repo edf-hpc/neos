@@ -48,7 +48,9 @@ my $firstnode = Neos::first_node ();
 
 sub main {
     if (Neos::get_job_detail('shared') eq 0) {
-        system("xrandr -d :0 --fb 4096x4096");
+        system(sprintf("xrandr -d :0 --fb %s",
+                       Neos::get_resolution(Neos::get_param('paraview_resolution'))
+                      ));
     }
 
     return unless ($firstnode eq hostname);
@@ -84,7 +86,7 @@ sub main {
     # Xvfb
     my $x_cmd = sprintf ("Xvfb :%s -once -screen 0 %sx24+32 -auth %s",
                          $display,
-                         Neos::get_resolution(),
+                         Neos::get_resolution(Neos::get_param('paraview_resolution')),
                          $xauth_file
         );
     my $x_pid;
