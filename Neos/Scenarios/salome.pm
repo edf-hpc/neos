@@ -108,6 +108,7 @@ sub main {
         Neos::set_param('wm_pid', $wm_pid);
     } else {
         $ENV{DISPLAY} = sprintf (":%s", $display);
+        $ENV{XAUTHORITY} = $xauth_file;
         exec $wm_cmd;
     }
 
