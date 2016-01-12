@@ -1,3 +1,10 @@
+neos (0.4.4) calibre9; urgency=low
+
+  * Run a window manager in Paraview and Salome scenarios to avoid
+    GLX errors (Fixes: #4).
+
+ -- Mehdi Dogguy <mehdi.dogguy@edf.fr>  Tue, 12 Jan 2016 16:00:53 +0100
+
 neos (0.4.3) calibre9; urgency=low
 
   * rfbport should be >= 1024 (Fixes: #1)

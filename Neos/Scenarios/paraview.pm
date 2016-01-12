@@ -100,6 +100,19 @@ sub main {
         } while (1 eq 1);
     }
 
+    # Window manager (to workaround a Paraview bug. See https://github.com/edf-hpc/neos/issues/4)
+    my $wm_cmd = sprintf ("%s --display=%s",
+                         Neos::get_param('default_session_manager'),
+                         $display
+        );
+    my $wm_pid;
+    if ($wm_pid = fork) {
+        push(@pids, $wm_pid);
+        Neos::set_param('wm_pid', $wm_pid);
+    } else {
+        exec $wm_cmd;
+    }
+
     # Run pvserver command
     my $cmd = sprintf("mpirun -x DISPLAY=:%s %s %s/bin/pvserver --connect-id=%s -rc -ch=%s",
                       $display,
@@ -133,7 +146,7 @@ sub main {
 
 sub clean {
     use Scalar::Util qw(looks_like_number);
-    my @pids = (Neos::get_param('pvserver_pid'), Neos::get_param('x_pid'));
+    my @pids = (Neos::get_param('pvserver_pid'), Neos::get_param('x_pid'), Neos::get_param('wm_pid'));
     foreach my $pid (@pids) {
         kill 'TERM', $pid if (looks_like_number($pid));
     }
