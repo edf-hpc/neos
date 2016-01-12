@@ -101,7 +101,7 @@ sub main {
     }
 
     # Window manager (to workaround a Paraview bug. See https://github.com/edf-hpc/neos/issues/4)
-    my $wm_cmd = sprintf ("%s", Neos::get_param('default_session_manager'));
+    my $wm_cmd = sprintf ("%s", Neos::get_param('default_window_manager'));
     my $wm_pid;
     if ($wm_pid = fork) {
         push(@pids, $wm_pid);
