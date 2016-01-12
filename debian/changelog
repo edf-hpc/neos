@@ -1,4 +1,4 @@
-neos (0.4.4) calibre9; urgency=low
+neos (0.5.0) calibre9; urgency=low
 
   * Run a window manager in Paraview and Salome scenarios to avoid
     GLX errors (Fixes: #4).
