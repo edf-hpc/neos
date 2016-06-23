@@ -145,8 +145,15 @@ class App(object):
             logger.debug("run cmd: %s", str(cmd))
             p_inenv = Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
 
-        returncode = p_inenv.wait()
-        logger.debug("return code: %d", returncode)
+        try:
+            returncode = p_inenv.wait()
+            logger.debug("return code: %d", returncode)
+        except KeyboardInterrupt:
+            logger.debug("received SIGINT")
+            # Do not need to forward signed to inenv app since it is in the
+            # process group and slurm will send the signal as well to all
+            # sub-processes tree.
+            return 1
         return returncode
 
 class AppInEnv(object):
