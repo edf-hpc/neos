@@ -31,6 +31,8 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
+import logging
+logger = logging.getLogger(__name__)
 import os
 from datetime import datetime
 import time
@@ -68,5 +70,18 @@ class SlurmJob(object):
     @property
     def firstnode(self):
         return self.nodes[0]
+
+    def dump(self):
+        """Dump job at debug level."""
+
+        logger.debug("job data:")
+        for attr in [ 'jobid',
+                      'procid',
+                      'nodes',
+                      'partition',
+                      'shared',
+                      'end' ]:
+            logger.debug(">> %s: %s", attr, str(getattr(self, attr)))
+
 
 Job = SlurmJob # alias

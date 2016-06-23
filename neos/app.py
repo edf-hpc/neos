@@ -223,6 +223,9 @@ class AppInEnv(object):
 
     def run(self):
 
+        # dump job information
+        self.job.dump()
+
         usable_scenario = self.find_scenario(self.conf.scenario)
         if usable_scenario is None:
             return 1
