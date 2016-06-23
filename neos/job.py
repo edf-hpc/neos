@@ -62,7 +62,7 @@ class SlurmJob(object):
 
     def rpc(self):
         job = pyslurm.job().find_id(self.jobid)
-        self.shared = job['shared'] != '0'
+        self.shared = job['shared'] != 0
         self.end = datetime.fromtimestamp(job['end_time'], localtz())
 
     @property
