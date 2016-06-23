@@ -95,7 +95,7 @@ class AppArgs(object):
                 raise Exception("additional scenarios directory %s is not a valid directory" % (path))
             self.scenario_user = path
         if args.scenario is not None:
-            self.scenario = args.scenario[0]
+            conf.scenario = args.scenario[0]
         if args.modules_dir is not None:
             if os.path.isabs(args.modules_dir[0]):
                 path = args.modules_dir[0]
