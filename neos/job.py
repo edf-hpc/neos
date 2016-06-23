@@ -64,8 +64,6 @@ class SlurmJob(object):
         job = pyslurm.job().find_id(self.jobid)
         self.shared = job['shared'] != '0'
         self.end = datetime.fromtimestamp(job['end_time'], localtz())
-        #self.shared = False
-        #self.end = datetime.now(localtz())
 
     @property
     def firstnode(self):
