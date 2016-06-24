@@ -200,11 +200,25 @@ class Scenario(object):
             logger.debug("run cmd: %s", ' '.join(cmd))
             return check_output(cmd, shell=shell)
 
+    def kill(self, exception):
+        logger.info("now killing other processes")
+        for process in self.pids:
+            if process is not exception:
+                logger.debug("killing process %s", process.pid)
+                process.kill()
+                process.wait()
+
     def wait(self):
         logger.debug("now waiting for processes to end")
-        for process in self.pids:
-            process.wait()
-            logger.debug("pid %d: return code: %d", process.pid, process.returncode)
+        while True:
+            for process in self.pids:
+                returncode = process.poll()
+                if returncode is not None:
+                    logger.info("process pid %d ends with return code: %d", process.pid, returncode)
+                    self.kill(process)
+                    return
+                else:
+                    sleep(0.5)
 
 class UsableScenario(object):
 
