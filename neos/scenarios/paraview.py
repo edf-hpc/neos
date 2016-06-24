@@ -76,7 +76,7 @@ class ScenarioParaview(Scenario):
         # See https://github.com/edf-hpc/neos/issues/4 for full details.
         os.environ['DISPLAY'] = ":%s" % (self.display)
         os.environ['XAUTHORITY'] = self.opts.xauthfile;
-        cmd = [ self.opts.wm ]
+        cmd = [ 'dbus-launch', '--exit-with-session', self.opts.wm ]
         self.cmd_run_bg(cmd, logfile=logfile)
 
         if self.job.shared:
