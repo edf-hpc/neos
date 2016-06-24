@@ -69,6 +69,10 @@ class SlurmJob(object):
     def firstnode(self):
         return self.nodes[0]
 
+    @property
+    def exclusive(self):
+        return not self.shared
+
     def dump(self):
         """Dump job at debug level."""
 
