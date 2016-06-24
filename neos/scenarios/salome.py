@@ -50,11 +50,6 @@ class ScenarioSalome(Scenario):
 
     def run(self):
 
-        if not self.job.shared:
-            cmd = ['vglrun', '-display', ':0' ]
-        else:
-            cmd = []
-
         cookie = self.cmd_output([ 'mcookie' ])
 
         # create empty xauthfile
@@ -85,12 +80,20 @@ class ScenarioSalome(Scenario):
         cmd = [ self.opts.wm ]
         self.cmd_run_bg(cmd, logfile=logfile)
 
+        if not self.job.shared:
+            vglrun = ['vglrun', '-display', ':0' ]
+        else:
+            vglrun = None
+
         # Run pvserver command
         cmd = [ '%s/runSession' % (self.opts.salomepath),
-                'mpirun', '-x', "DISPLAY=:%s" % (self.display), vglrun,
+                'mpirun', '-x', "DISPLAY=:%s" % (self.display),
                 "%s/bin/pvserver" % (self.opts.paraviewpath),
                 "--connect-id=%s" % (self.display),
                 '-rc', "-ch=%s" % (self.srcip) ]
+        # insert vglrun command if enable
+        if vglrun is not None:
+            cmd[3:3] = vglrun
         self.cmd_run_bg(cmd, logfile=logfile)
 
         logfile.close()

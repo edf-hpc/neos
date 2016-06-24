@@ -82,13 +82,16 @@ class ScenarioParaview(Scenario):
         if not self.job.shared:
             vglrun = ['vglrun', '-display', ':0' ]
         else:
-            vglrun = []
+            vglrun = None
 
         # Run pvserver command
-        cmd = [ 'mpirun', '-x', "DISPLAY=:%s" % (self.display), vglrun,
+        cmd = [ 'mpirun', '-x', "DISPLAY=:%s" % (self.display),
                 "%s/bin/pvserver" % (self.opts.paraviewpath),
                 "--connect-id=%s" % (self.display),
                 '-rc', "-ch=%s" % (self.srcip) ]
+        # insert vglrun command if enable
+        if vglrun is not None:
+            cmd[3:3] = vglrun
         self.cmd_run_bg(cmd, logfile=logfile)
 
         logfile.close()
