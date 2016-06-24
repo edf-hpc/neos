@@ -79,7 +79,7 @@ class ScenarioParaview(Scenario):
         cmd = [ self.opts.wm ]
         self.cmd_run_bg(cmd, logfile=logfile)
 
-        if not self.job.shared:
+        if self.job.shared:
             vglrun = ['vglrun', '-display', ':0' ]
         else:
             vglrun = None
