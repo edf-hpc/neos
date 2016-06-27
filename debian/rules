@@ -1,11 +1,10 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-PLDESTDIR := $(CURDIR)/debian/neos
 
 %:
-	dh $@
+	dh $@ --with python2
 
-.PHONY: override_dh_auto_install
-override_dh_auto_install:
-	$(MAKE) install DESTDIR=$(PLDESTDIR)
+clean:
+	dh $@
+	rm -rf *.egg-info

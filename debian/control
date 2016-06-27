@@ -2,9 +2,11 @@ Source: neos
 Priority: optional
 Maintainer: Mehdi Dogguy <mehdi.dogguy@edf.fr>
 Build-Depends:
- debhelper (>= 8)
-Build-Depends-Indep:
- perl (>= 5.10)
+ debhelper (>= 8),
+ dh-python,
+ python-all (>= 2.7),
+ python-setuptools
+X-Python-Version: >= 2.7
 Standards-Version: 3.9.3
 Section: devel
 Vcs-Browser: https://github.com/edf-hpc/neos
@@ -15,42 +17,19 @@ Architecture: all
 Depends:
  ${shlibs:Depends},
  ${misc:Depends},
- ${perl:Depends},
- perl-modules,
- libfile-slurp-perl,
- libfile-chmod-perl,
- libconfig-general-perl,
- libswitch-perl,
- libslurm-perl,
- libcrypt-generatepassword-perl
-Description: Resource reservation scripts through Slurm
- This package contains a program called Neos which eases the execution
- of defined sequence of actions on a Slurm cluster. For example,
- starting a graphical environment for users, prepare and start a
- visualization framework (like Paraview or Salome) for remote use.
+ ${python:Depends}
+Description: HPC job sessions manager framework
+ This package contains the NEOS software which provides a generic framework to
+ manage job sessions on HPC clusters.
  .
- Neos features a generic scenario mechanism and can be extended easily
- with new scenarios.
+ The framework is based on scenarios. A scenario defines the sequential steps
+ to properly setup and initialize the job session. Users select the scenario
+ for their jobs and can even define their own scenarios. The frawework can
+ manage a wide variety of workloads from classic MPI parallel computing to
+ advanced visualization sessions with 3D remote rendering.
+ .
+ NEOS is fully integrated with open-source Slurm workload manager and modules
+ environment manager.
  .
  This package should be installed on all nodes (frontends as well as compute
  nodes).
-
-Package: slurm-llnl-neos-plugin
-Architecture: all
-Depends:
- ${shlibs:Depends},
- ${misc:Depends},
- ${perl:Depends},
- slurm-llnl-generic-scripts-plugin,
- neos
-Description: Resource reservation scripts through Slurm
- This package contains a program called Neos which eases the execution
- of defined sequence of actions on a Slurm cluster. For example,
- starting a graphical environment for users, prepare and start a
- visualization framework (like Paraview or Salome) for remote use.
- .
- Neos features a generic scenario mechanism and can be extended easily
- with new scenarios.
- .
- This package contains necessary plumbing in order to plug Neos into an
- existing Slurm cluster.

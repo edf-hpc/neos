@@ -1,10 +1,19 @@
-Neos
-====
+NEOS
+======
 
-This software is a computer program whose purpose is to ease execution
-of defined sequence of actions on a Slurm cluster. For example, starting
-a graphical environment for users, prepare and start a visualization
-framework (like Paraview or Salome) for remote use.
+NEOS is a software which provides a generic framework to manage job sessions
+on HPC clusters.
 
-Neos features a generic scenario mechanism and can be extended easily
-with new scenarios.
+The framework is based on scenarios. A scenario defines the sequential steps to
+properly setup and initialize the job session. Users select the scenario for
+their jobs and can even define their own scenarios. The frawework can manage a
+wide variety of workloads from classic MPI parallel computing to advanced
+visualization sessions with 3D remote rendering.
+
+Scenarios are defined in Python programming language with a fully documented
+API.
+
+NEOS is fully integrated with open-source Slurm workload manager and modules
+environment manager.
+
+NEOS is a free software distributed under the terms of CeCILL v2 license.
