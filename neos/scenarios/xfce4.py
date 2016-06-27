@@ -31,18 +31,11 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
-import os
-from neos import Scenario
+from neos.scenarios.vnc import ScenarioVnc
 
-class ScenarioXfce4(Scenario):
+class ScenarioXfce4(ScenarioVnc):
 
     NAME = 'xfce4'
-    OPTS = [ 'xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
-             'vauthfile:str:${BASEDIR}/vncpass_${JOBID}',
-             'xlogfile:str:${BASEDIR}/Xlog_${JOBID}',
-             'resolution:str:1024x768',
-             'vncpasswd:str:x11vnc',
-             'vnc:str:x11vnc' ]
 
     def __init__(self):
 
@@ -50,54 +43,4 @@ class ScenarioXfce4(Scenario):
 
     def run(self):
 
-        self.dump_xml()
-
-        cookie = self.cmd_output([ 'mcookie' ])
-
-        # create empty xauthfile
-        self.create_file(self.opts.xauthfile)
-
-        cmd = [ 'xauth', '-f', self.opts.xauthfile, '-q', 'add',
-                ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie ]
-        self.cmd_wait(cmd)
-
-        # redirect stdint/stdout to xlogfile
-        # launch in background
-
-        self.ensure_dir(self.opts.xlogfile)
-        logfile = open(self.opts.xlogfile, 'w+')
-
-        if self.display == 0:
-            cmd = [ 'xrandr', '-d', ':0', '--fb', self.opts.resolution ]
-        else:
-            cmd = [ 'Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
-                    "%sx24+32" % (self.opts.resolution),
-                    '-auth', self.opts.xauthfile ]
-        self.cmd_run_bg(cmd, logfile=logfile)
-
-        # start window manager
-        os.environ['DISPLAY'] = ":%s" % (self.display)
-        os.environ['XAUTHORITY'] = self.opts.xauthfile;
-        cmd = [ 'dbus-launch', '--exit-with-session', 'xfce4-session' ]
-        self.cmd_run_bg(cmd, logfile=logfile)
-
-        self.sleep(1)
-
-        # store VNC password in vauthfile
-        cmd = [ self.opts.vncpasswd, '-storepasswd', self.password,
-                self.opts.vauthfile ]
-        self.cmd_wait(cmd, logfile=logfile)
-
-        # start VNC server
-        cmd = [ self.opts.vnc, '-desktop', self.conf.cluster_name, '-xkb',
-                '-ncache', '0', '-scale', self.opts.resolution, '-once',
-                '-display', ":%d" % (self.display),
-                '-auth', self.opts.xauthfile, '-rfbport', str(self.rfbport),
-                '-rfbwait', '30000', '-localhost',
-                '-rfbauth', self.opts.vauthfile,
-                '-oa', self.opts.xlogfile, '-noxdamage' ]
-        self.cmd_run_bg(cmd, logfile=logfile)
-
-        logfile.close()
-
-        return 0
+        return self._run_wm('xfce4-session') 

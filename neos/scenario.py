@@ -65,10 +65,21 @@ class Scenario(object):
 
     def declare_opts(self):
 
-        if(hasattr(self, 'OPTS')):
-            for opt_s in self.OPTS:
-                logger.debug("scenario %s: declaring opt param %s", self.NAME, opt_s)
+        logger.debug("scenario %s: declaring opts", self.NAME)
+        self.declare_opts_cls(type(self))
+
+    def declare_opts_cls(self, cls):
+
+        if cls == object: return
+
+        if hasattr(cls, 'OPTS'):
+            for opt_s in cls.OPTS:
+                logger.debug("class %s: opt %s", cls.__name__, opt_s)
                 self.opts.add(opt_s)
+
+        for xcls in cls.__bases__:
+            self.declare_opts_cls(xcls)
+
 
     def set_opts(self):
 

@@ -228,7 +228,7 @@ class AppInEnv(object):
         # find usable scenario among module members
         for (elem_name, elem_type) in inspect.getmembers(module):
             if inspect.isclass(elem_type) and issubclass(elem_type, Scenario) \
-                and elem_type is not Scenario:
+                and elem_type is not Scenario and hasattr(elem_type, 'NAME'):
                 logger.debug("loaded usable scenario: %s", elem_name)
                 usable_scenario = \
                     UsableScenario(elem_type.NAME, elem_name, elem_type)
