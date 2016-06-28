@@ -43,4 +43,4 @@ class ScenarioGnome(ScenarioVnc):
 
     def run(self):
 
-        return self._run_wm('gnome-session')
+        return self._run_vnc('gnome-session')

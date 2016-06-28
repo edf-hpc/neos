@@ -31,16 +31,52 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
-from neos.scenarios.vnc import ScenarioVnc
+import os
+from neos import Scenario
 
-class ScenarioXfce4(ScenarioVnc):
+class ScenarioWM(Scenario):
 
-    NAME = 'xfce4'
+    OPTS = [ 'xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
+             'xlogfile:str:${BASEDIR}/Xlog_${JOBID}',
+             'resolution:str:1024x768' ]
 
     def __init__(self):
 
-        super(ScenarioXfce4, self).__init__()
+        super(ScenarioWM, self).__init__()
 
-    def run(self):
+    def _run_wm(self, wm):
 
-        return self._run_vnc('xfce4-session') 
+        cookie = self.cmd_output([ 'mcookie' ])
+
+        # create empty xauthfile
+        self.create_file(self.opts.xauthfile)
+
+        cmd = [ 'xauth', '-f', self.opts.xauthfile, '-q', 'add',
+                ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie ]
+        self.cmd_wait(cmd)
+
+        # redirect stdint/stdout to xlogfile
+        # launch in background
+
+        self.ensure_dir(self.opts.xlogfile)
+        logfile = open(self.opts.xlogfile, 'w+')
+
+        if self.display == 0:
+            cmd = [ 'xrandr', '-d', ':0', '--fb', self.opts.resolution ]
+        else:
+            cmd = [ 'Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
+                    "%sx24+32" % (self.opts.resolution),
+                    '-auth', self.opts.xauthfile ]
+        self.cmd_run_bg(cmd, logfile=logfile)
+
+        # start window manager
+        os.environ['DISPLAY'] = ":%s" % (self.display)
+        os.environ['XAUTHORITY'] = self.opts.xauthfile;
+        cmd = [ 'dbus-launch', '--exit-with-session', wm ]
+        self.cmd_run_bg(cmd, logfile=logfile)
+
+        self.sleep(1)
+
+        logfile.close()
+
+        return 0
