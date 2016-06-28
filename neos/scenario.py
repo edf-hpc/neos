@@ -57,6 +57,7 @@ class Scenario(object):
         self.conf = Conf()
         self.job = Job()
         self.pids = set() # bg processes
+        self.tmpfiles = set()
         self.password = gen_password()
         self.srcip = os.environ['SSH_CONNECTION'].split(' ')[0]
         self.rinip = socket.gethostbyname(self.conf.wan_prefix + socket.gethostname())
@@ -186,6 +187,12 @@ class Scenario(object):
         if self.conf.dryrun:
             sleep(time)
 
+    def register_tmpfile(self, filename):
+
+        if filename not in self.tmpfiles:
+            logger.debug("register tmp file %s", filename)
+            self.tmpfiles.add(filename)
+
     def cmd_run_bg(self, cmd, shell=False):
 
         if self.conf.dryrun:
@@ -245,6 +252,11 @@ class Scenario(object):
         if self.logfile is not None:
             logger.debug("closing logfile descriptor")
             self.logfile.close()
+        if not self.conf.keep:
+            for filename in self.tmpfiles:
+                if os.path.exists(filename):
+                    logger.debug("removing tmp file %s", filename)
+                    os.remove(filename)
 
 class UsableScenario(object):
 

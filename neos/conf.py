@@ -63,6 +63,7 @@ class AppConf(object):
         self.print_version = False
         self.list_scenarios = False
         self.log = False
+        self.keep = False
         self.debug = False
         self.dryrun = False
 
@@ -88,6 +89,7 @@ class AppConf(object):
                       'print_version',
                       'list_scenarios',
                       'log',
+                      'keep',
                       'debug',
                       'dryrun',
                       'scenario_user',

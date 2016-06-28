@@ -49,6 +49,7 @@ class ScenarioWM(Scenario):
 
         # create empty xauthfile
         self.create_file(self.opts.xauthfile)
+        self.register_tmpfile(self.opts.xauthfile)
 
         cmd = [ 'xauth', '-f', self.opts.xauthfile, '-q', 'add',
                 ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie ]

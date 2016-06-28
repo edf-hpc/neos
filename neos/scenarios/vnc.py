@@ -55,6 +55,7 @@ class ScenarioVnc(ScenarioWM):
         cmd = [ self.opts.vncpasswd, '-storepasswd', self.password,
                 self.opts.vauthfile ]
         self.cmd_wait(cmd)
+        self.register_tmpfile(self.opts.vauthfile)
 
         # start VNC server
         cmd = [ self.opts.vnc, '-desktop', self.conf.cluster_name, '-xkb',
