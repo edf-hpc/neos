@@ -31,17 +31,14 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
-import os
-from neos import Scenario
+from neos.scenarios.wm import ScenarioWM
 
-class ScenarioParaview(Scenario):
+class ScenarioParaview(ScenarioWM):
 
     NAME = 'paraview'
-    OPTS = [ 'xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
-             'xlogfile:str:${BASEDIR}/Xlog_${JOBID}',
-             'wm:str:xfce4-session',
-             'paraviewpath:str:/opt/paraview/3.14',
-             'resolution:str:4096x4096' ]
+    OPTS = [ 'wm:str:xfce4-session',
+             'resolution:str:4096x4096',
+             'paraviewpath:str:/opt/paraview/3.14' ]
 
     def __init__(self):
 
@@ -49,35 +46,12 @@ class ScenarioParaview(Scenario):
 
     def run(self):
 
-        cookie = self.cmd_output([ 'mcookie' ])
-
-        # create empty xauthfile
-        self.create_file(self.opts.xauthfile)
-
-        cmd = [ 'xauth', '-f', self.opts.xauthfile, '-q', 'add',
-                ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie ]
-        self.cmd_wait(cmd)
-
-        # redirect stdint/stdout to xlogfile
-        # launch in background
+        wm_fail = self._run_wm(self.opts.wm)
+        if wm_fail:
+            return wm_fail
 
         self.ensure_dir(self.opts.xlogfile)
         logfile = open(self.opts.xlogfile, 'w+')
-
-        if self.display == 0:
-            cmd = [ 'xrandr', '-d', ':0', '--fb', self.opts.resolution ]
-        else:
-            cmd = [ 'Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
-                    "%sx24+32" % (self.opts.resolution),
-                    '-auth', self.opts.xauthfile ]
-        self.cmd_run_bg(cmd, logfile=logfile)
-
-        # start window manager to workaround a Paraview bug.
-        # See https://github.com/edf-hpc/neos/issues/4 for full details.
-        os.environ['DISPLAY'] = ":%s" % (self.display)
-        os.environ['XAUTHORITY'] = self.opts.xauthfile;
-        cmd = [ 'dbus-launch', '--exit-with-session', self.opts.wm ]
-        self.cmd_run_bg(cmd, logfile=logfile)
 
         if self.job.shared:
             vglrun = ['vglrun', '-display', ':0' ]
