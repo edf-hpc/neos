@@ -256,10 +256,18 @@ class AppInEnv(object):
             for opt in scenario.instance.opts:
                 print "    - %-15s (%s): %s" % opt
 
+    def dump_env(self):
+
+        logger.debug('environment:')
+        for key, value in os.environ.iteritems():
+            logger.debug(">> %s: %s", key, value)
+
     def run(self):
 
         # first dump conf
         self.conf.dump()
+
+        self.dump_env()
 
         # if version flag, just print version and leave here
         if self.conf.print_version is True:
