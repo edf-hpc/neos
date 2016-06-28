@@ -52,13 +52,38 @@ class SlurmJob(object):
 
     def __init__(self):
 
-        self.jobid = int(os.environ.get('SLURM_JOB_ID'))
-        self.procid = int(os.environ.get('SLURM_PROCID'))
-        self.nodes = NodeSet(os.environ.get('SLURM_NODELIST'))
-        self.partition = os.environ.get('SLURM_JOB_PARTITION')
+        self.jobid = None
+        self.procid = None
+        self.nodes = None
+        self.partition = None
+
+        # Test if NEOS is run inside a job context by checking an environment
+        # variable. If run outside, the attributes of the object are None and
+        # self.known() returns False.
+        # Do not test SLURM_JOB_ID since it is defined on frontend node within
+        # salloc shell (whereas SLURM_PROCID is not) and it should be
+        # considered out of job environment in this case.
+        if 'SLURM_PROCID' in os.environ:
+            self.jobid = int(os.environ.get('SLURM_JOB_ID'))
+            self.procid = int(os.environ.get('SLURM_PROCID'))
+            self.nodes = NodeSet(os.environ.get('SLURM_NODELIST'))
+            self.partition = os.environ.get('SLURM_JOB_PARTITION')
+        else:
+            logger.debug("running out of slurm job environment, "
+                         "skipping job attributes filling")
         # data filled using pyslurm with RPC to slurmctld
         self.shared = None
         self.end = None
+
+    @property
+    def known(self):
+
+        return self.jobid is not None
+
+    @property
+    def unknown(self):
+
+        return not self.known
 
     def rpc(self):
         job = pyslurm.job().find_id(self.jobid)

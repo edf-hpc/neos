@@ -61,6 +61,7 @@ class AppConf(object):
 
         # user args
         self.print_version = False
+        self.list_scenarios = False
         self.debug = False
         self.dryrun = False
 
@@ -84,6 +85,7 @@ class AppConf(object):
                       'cmd_mcmd',
                       'cmd_shell',
                       'print_version',
+                      'list_scenarios',
                       'debug',
                       'dryrun',
                       'scenario_user',

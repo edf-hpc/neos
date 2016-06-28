@@ -227,6 +227,14 @@ class UsableScenario(object):
         self.name = name
         self.modname = modname
         self.init = init
+        # Not instantiated here to avoid multiple instantiations of the same
+        # scenario during scenarios discovery. Discovery logic calls
+        # instantiate() after making sure the scenario is new.
+        self.instance = None
+
+    def instantiate(self):
+
+        self.instance = self.init()
 
     def __eq__(self, other):
 

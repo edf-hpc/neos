@@ -27,6 +27,7 @@ Global options
     --version       Print NEOS version and exit.
     -d, --debug     Enable debug output.
     --dry-run       Dry-run mode: print commands to run without actually running them.
+    -l, --list      List available scenarios with their optional parameters.
     -s, --scenario=SCENARIO
                     Name of scenario to run.
     --scenarios-dir=DIR
@@ -45,6 +46,10 @@ Examples
 Run default scenario::
 
     neos
+
+List available scenarios with their optional parameters::
+
+    neos --list
 
 Run `gnome` scenario with specific resolution::
 

@@ -73,6 +73,10 @@ class AppArgs(object):
                                  help="Optional scenarios parameters. Ex: gdb:true,colors:24",
                                  nargs=1,
                                  required=False)
+        self.parser.add_argument('-l', '--list',
+                                 dest='list_scenarios',
+                                 help="List available scenarios and parameters.",
+                                 action='store_true')
 
     def update_conf(self, conf):
 
@@ -84,6 +88,8 @@ class AppArgs(object):
             conf.debug = True
         if args.dry_run:
             conf.dryrun = True
+        if args.list_scenarios:
+            conf.list_scenarios = True
         if args.scenarios_dir is not None:
             if os.path.isabs(args.scenarios_dir[0]):
                 path = args.scenarios_dir[0]

@@ -59,11 +59,20 @@ class ScenarioOpts(object):
         (opt, value) = self.parse_user_opt(opt_s)
         self._opts[opt].value = value
 
+    def __iter__(self):
+
+        for name, opt in self._opts.iteritems():
+            yield (opt.name, opt.p_type.__name__, str(opt.value))
+
     @staticmethod
     def _subst_placeholders(value):
         tpl = Template(value)
         job = Job()
         conf = Conf()
+        # if outside of job context, do not try to substitute placeholders
+        # since some variables are unknown.
+        if job.unknown:
+            return value
         placeholders = { 'BASEDIR': conf.base_dir,
                          'JOBID': job.jobid }
         return tpl.substitute(placeholders)

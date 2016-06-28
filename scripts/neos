@@ -36,10 +36,10 @@ NEOS command-line tool
 """
 
 import sys
-from neos.app import Launcher, App
+from neos.app import Launcher
 
 if __name__ == '__main__':
 
-    launcher = Launcher(App)
+    launcher = Launcher()
     code = launcher.run()
     sys.exit(code)

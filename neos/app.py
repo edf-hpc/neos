@@ -50,7 +50,9 @@ class Launcher(object):
        based on configuration file and arguments, logger and then launching
        the application given in parameter."""
 
-    def __init__(self, app, conf_path='/etc/neos/neos.conf'):
+    def __init__(self, app=None, conf_path='/etc/neos/neos.conf'):
+        """If the app is not set, the Launcher tries to figure out by itself
+           the best choice between App and AppInEnv based on parameters."""
 
         self.app = app
         # first instanciations of Conf and Job singletons here
@@ -85,17 +87,41 @@ class Launcher(object):
         handler.setFormatter(formatter)
         app_logger.addHandler(handler)
 
+    def can_run_outside_job(self):
+        """NEOS can run out of job environment only to print help
+           (automatically handled by argparse), version or list scenarios.
+           In all other cases, NEOS will fail if run outside job
+           environment."""
+        return self.conf.print_version or self.conf.list_scenarios
+
     def run(self):
         """Initialize and run the application only if expected partition and
            job task 0. This way, NEOS behaves the same when launched with
            either srun and sbatch."""
 
-        if self.job.partition != self.conf.cluster_partition:
-            logger.error("cannot run on partition %s", self.job.partition)
+        # Check if outside job environment and in authorized exceptions, else
+        # leave with error.
+        if self.job.unknown and not self.can_run_outside_job():
+            logger.error("NEOS cannot run outside of job environment")
             return 1
-        if self.job.procid:
-            logger.debug("instantly leaving on procid %d", self.job.procid)
-            return 0
+
+        if self.job.known:
+            if self.job.partition != self.conf.cluster_partition:
+                logger.error("cannot run on partition %s", self.job.partition)
+                return 1
+            if self.job.procid:
+                logger.debug("instantly leaving on procid %d", self.job.procid)
+                return 0
+
+        # If the app is not yet defined at this stage, the launcher tries to
+        # find out the best one based on parameters.
+        if self.app is None:
+            if self.can_run_outside_job() or self.conf.module is None:
+                self.app = AppInEnv
+            else:
+                self.app = App
+            logger.debug("app selected: %s", self.app.__name__)
+
         app = self.app(self.conf, self.job)
         return app.run()
 
@@ -112,38 +138,24 @@ class App(object):
 
     def run(self):
 
-        # first dump conf
-        self.conf.dump()
+        assert self.conf.module is not None
 
-        # if version flag, just print version and leave here
-        if self.conf.print_version is True:
-            print("NEOS v%s" % (self.conf.version))
-            sys.exit(0)
+        cmd = [self.conf.cmd_mcmd, self.conf.cmd_shell, 'load', self.conf.module ]
+        logger.debug("run cmd: %s", ' '.join(cmd))
 
-        if self.conf.module is not None:
+        (pipe_out, pipe_in) = os.pipe()
 
-            cmd = [self.conf.cmd_mcmd, self.conf.cmd_shell, 'load', self.conf.module ]
-            logger.debug("run cmd: %s", ' '.join(cmd))
+        pipe_r = os.fdopen(pipe_out)
+        pipe_w = os.fdopen(pipe_in, 'w')
 
-            (pipe_out, pipe_in) = os.pipe()
-
-            pipe_r = os.fdopen(pipe_out)
-            pipe_w = os.fdopen(pipe_in, 'w')
-
-            p1 = Popen(cmd, stdout=pipe_w)
-            p1.wait()
-            cmd = "python %s %s" % (self.conf.cmd_inenv, ' '.join(sys.argv[1:]))
-            logger.debug("exec in %s: %s", self.conf.cmd_shell, cmd)
-            pipe_w.write(cmd + ';')
-            pipe_w.close()
-            p_inenv = Popen([self.conf.cmd_shell], stdin=pipe_r, stdout=sys.stdout, stderr=sys.stderr)
-            pipe_r.close()
-
-        else:
-            cmd = [ 'python', self.conf.cmd_inenv ]
-            cmd.extend(sys.argv[1:])
-            logger.debug("run cmd: %s", str(cmd))
-            p_inenv = Popen(cmd, stdout=sys.stdout, stderr=sys.stderr)
+        p1 = Popen(cmd, stdout=pipe_w)
+        p1.wait()
+        cmd = "python %s %s" % (self.conf.cmd_inenv, ' '.join(sys.argv[1:]))
+        logger.debug("exec in %s: %s", self.conf.cmd_shell, cmd)
+        pipe_w.write(cmd + ';')
+        pipe_w.close()
+        p_inenv = Popen([self.conf.cmd_shell], stdin=pipe_r, stdout=sys.stdout, stderr=sys.stderr)
+        pipe_r.close()
 
         try:
             returncode = p_inenv.wait()
@@ -163,9 +175,14 @@ class AppInEnv(object):
         self.conf = conf
         self.job = job
         self.scenarios = set()
+        # Send RPC to slurmctld now to fill-up all job properties if job is
+        # known, ie. NEOS runs inside job environment. It must run before
+        # loading the scenarios to make just job's related placeholders are
+        # properly substituted. If run outside job environment, the
+        # placeholders are simply ignored and left un-substituted.
+        if job.known:
+            self.job.rpc()
         self.load_scenarios()
-        # send RPC to slurmctld now to fill-up all job properties
-        self.job.rpc()
 
     def load_scenarios(self):
 
@@ -215,8 +232,11 @@ class AppInEnv(object):
                 logger.debug("loaded usable scenario: %s", elem_name)
                 usable_scenario = \
                     UsableScenario(elem_type.NAME, elem_name, elem_type)
-                # register scenario only once
+                # instantiate and register scenario only once
                 if usable_scenario not in self.scenarios:
+                    # the scenarios are instanciated here to load opts for
+                    # print_scenarios() eventually.
+                    usable_scenario.instantiate()
                     self.scenarios.add(usable_scenario)
 
     def find_scenario(self, name):
@@ -228,7 +248,30 @@ class AppInEnv(object):
             return None
         return scenario[0]
 
+    def print_scenarios(self):
+        """Print on stdout the list of usable scenarios with their optional
+           parameters."""
+        for scenario in self.scenarios:
+            print "- %s (%s)" % (scenario.name, scenario.modname)
+            for opt in scenario.instance.opts:
+                print "    - %-15s (%s): %s" % opt
+
     def run(self):
+
+        # first dump conf
+        self.conf.dump()
+
+        # if version flag, just print version and leave here
+        if self.conf.print_version is True:
+            print("NEOS v%s" % (self.conf.version))
+            sys.exit(0)
+
+        # if list_scenarios flag is set, print them and leave here
+        if self.conf.list_scenarios is True:
+            self.print_scenarios()
+            sys.exit(0)
+
+        assert self.job.known
 
         # dump job information
         self.job.dump()
@@ -236,7 +279,7 @@ class AppInEnv(object):
         usable_scenario = self.find_scenario(self.conf.scenario)
         if usable_scenario is None:
             return 1
-        scenario = usable_scenario.init()
+        scenario = usable_scenario.instance
         result = scenario.run()
         scenario.wait()
         return result
