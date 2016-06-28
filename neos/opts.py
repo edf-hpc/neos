@@ -53,7 +53,8 @@ class ScenarioOpts(object):
     def add(self, opt_s):
 
         opt = ScenarioOptParam(*ScenarioOpts.parse_scen_opt(opt_s))
-        self._opts[opt.name] = opt
+        if opt.name not in self._opts.keys():
+            self._opts[opt.name] = opt
 
     def set(self, opt_s):
         (opt, value) = self.parse_user_opt(opt_s)
