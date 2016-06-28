@@ -39,6 +39,7 @@ import os
 import glob
 import imp
 import inspect
+import signal
 
 from neos.scenario import UsableScenario, Scenario
 from neos.conf import Conf, ConfLoader
@@ -150,7 +151,10 @@ class App(object):
 
         p1 = Popen(cmd, stdout=pipe_w)
         p1.wait()
-        cmd = "python %s %s" % (self.conf.cmd_inenv, ' '.join(sys.argv[1:]))
+        # Run `exec python` in bash to exec it without forking. This removes
+        # bash process from the process tree and the App can easily send
+        # signals to AppInEnv.
+        cmd = "exec python %s %s" % (self.conf.cmd_inenv, ' '.join(sys.argv[1:]))
         logger.debug("exec in %s: %s", self.conf.cmd_shell, cmd)
         pipe_w.write(cmd + ';')
         pipe_w.close()
@@ -161,10 +165,8 @@ class App(object):
             returncode = p_inenv.wait()
             logger.debug("return code: %d", returncode)
         except KeyboardInterrupt:
-            logger.debug("received SIGINT")
-            # Do not need to forward signed to inenv app since it is in the
-            # process group and slurm will send the signal as well to all
-            # sub-processes tree.
+            logger.debug("received SIGINT, forwarding it to inenv sub-process")
+            p_inenv.send_signal(signal.SIGINT)
             return 1
         return returncode
 
