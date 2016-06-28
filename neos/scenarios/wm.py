@@ -37,7 +37,6 @@ from neos import Scenario
 class ScenarioWM(Scenario):
 
     OPTS = [ 'xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
-             'xlogfile:str:${BASEDIR}/Xlog_${JOBID}',
              'resolution:str:1024x768' ]
 
     def __init__(self):
@@ -55,28 +54,20 @@ class ScenarioWM(Scenario):
                 ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie ]
         self.cmd_wait(cmd)
 
-        # redirect stdint/stdout to xlogfile
-        # launch in background
-
-        self.ensure_dir(self.opts.xlogfile)
-        logfile = open(self.opts.xlogfile, 'w+')
-
         if self.display == 0:
             cmd = [ 'xrandr', '-d', ':0', '--fb', self.opts.resolution ]
         else:
             cmd = [ 'Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
                     "%sx24+32" % (self.opts.resolution),
                     '-auth', self.opts.xauthfile ]
-        self.cmd_run_bg(cmd, logfile=logfile)
+        self.cmd_run_bg(cmd)
 
         # start window manager
         os.environ['DISPLAY'] = ":%s" % (self.display)
         os.environ['XAUTHORITY'] = self.opts.xauthfile;
         cmd = [ 'dbus-launch', '--exit-with-session', wm ]
-        self.cmd_run_bg(cmd, logfile=logfile)
+        self.cmd_run_bg(cmd)
 
         self.sleep(1)
-
-        logfile.close()
 
         return 0

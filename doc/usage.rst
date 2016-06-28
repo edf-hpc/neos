@@ -27,7 +27,8 @@ Global options
     --version       Print NEOS version and exit.
     -d, --debug     Enable debug output.
     --dry-run       Dry-run mode: print commands to run without actually running them.
-    -l, --list      List available scenarios with their optional parameters.
+    -l, --log       Log commands output instead of printing on stdout/stderr.
+    -L, --list      List available scenarios with their optional parameters.
     -s, --scenario=SCENARIO
                     Name of scenario to run.
     --scenarios-dir=DIR

@@ -51,9 +51,6 @@ class ScenarioSalome(ScenarioWM):
         if wm_fail:
             return wm_fail
 
-        self.ensure_dir(self.opts.xlogfile)
-        logfile = open(self.opts.xlogfile, 'w+')
-
         if self.job.shared:
             vglrun = ['vglrun', '-display', ':0' ]
         else:
@@ -68,8 +65,6 @@ class ScenarioSalome(ScenarioWM):
         # insert vglrun command if enable
         if vglrun is not None:
             cmd[3:3] = vglrun
-        self.cmd_run_bg(cmd, logfile=logfile)
-
-        logfile.close()
+        self.cmd_run_bg(cmd)
 
         return 0

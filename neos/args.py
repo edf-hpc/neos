@@ -73,7 +73,10 @@ class AppArgs(object):
                                  help="Optional scenarios parameters. Ex: gdb:true,colors:24",
                                  nargs=1,
                                  required=False)
-        self.parser.add_argument('-l', '--list',
+        self.parser.add_argument('-l', '--log',
+                                 help="Log commands output instead of printing on stdout/stderr.",
+                                 action='store_true')
+        self.parser.add_argument('-L', '--list',
                                  dest='list_scenarios',
                                  help="List available scenarios and parameters.",
                                  action='store_true')
@@ -90,6 +93,8 @@ class AppArgs(object):
             conf.dryrun = True
         if args.list_scenarios:
             conf.list_scenarios = True
+        if args.log:
+            conf.log = True
         if args.scenarios_dir is not None:
             if os.path.isabs(args.scenarios_dir[0]):
                 path = args.scenarios_dir[0]

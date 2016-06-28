@@ -50,6 +50,8 @@ class Scenario(object):
 
     MAGIC_NUMBER = 59530
 
+    OPTS = [ 'logfile:str:${BASEDIR}/Xlog_${JOBID}' ]
+
     def __init__(self):
 
         self.conf = Conf()
@@ -62,6 +64,13 @@ class Scenario(object):
         self.opts = ScenarioOpts()
         self.declare_opts()
         self.set_opts()
+
+        if self.conf.log:
+            self.ensure_dir(self.opts.logfile)
+            logger.debug("opening logfile %s", self.opts.logfile)
+            self.logfile = open(self.opts.logfile, 'w+')
+        else:
+            self.logfile = None
 
     def declare_opts(self):
 
@@ -177,30 +186,30 @@ class Scenario(object):
         if self.conf.dryrun:
             sleep(time)
 
-    def cmd_run_bg(self, cmd, shell=False, logfile=None):
+    def cmd_run_bg(self, cmd, shell=False):
 
         if self.conf.dryrun:
             logger.info("run cmd: %s", ' '.join(cmd))
             return FakePopen()
         else:
             logger.debug("run cmd: %s", ' '.join(cmd))
-            if logfile is None:
-                process = Popen(cmd, shell=shell, stdout=sys.stdout, stderr=sys.stderr)
+            if self.conf.log:
+                process = Popen(cmd, shell=shell, stdout=self.logfile, stderr=self.logfile)
             else:
-                process = Popen(cmd, shell=shell, stdout=logfile, stderr=logfile)
+                process = Popen(cmd, shell=shell, stdout=sys.stdout, stderr=sys.stderr)
             self.pids.add(process)
 
-    def cmd_wait(self, cmd, shell=False, logfile=None):
+    def cmd_wait(self, cmd, shell=False):
 
         if self.conf.dryrun:
             logger.info("run cmd: %s", ' '.join(cmd))
             return 0
         else:
             logger.debug("run cmd: %s", ' '.join(cmd))
-            if logfile is None:
-                return call(cmd, shell=shell, stdout=sys.stdout, stderr=sys.stderr)
+            if self.conf.log:
+                return call(cmd, shell=shell, stdout=self.logfile, stderr=self.logfile)
             else:
-                return call(cmd, shell=shell, stdout=logfile, stderr=logfile)
+                return call(cmd, shell=shell, stdout=sys.stdout, stderr=sys.stderr)
 
     def cmd_output(self, cmd, shell=False):
 
@@ -230,6 +239,12 @@ class Scenario(object):
                     return
                 else:
                     sleep(0.5)
+
+    def cleanup(self):
+        logger.debug("cleaning up before exiting")
+        if self.logfile is not None:
+            logger.debug("closing logfile descriptor")
+            self.logfile.close()
 
 class UsableScenario(object):
 

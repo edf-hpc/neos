@@ -282,4 +282,5 @@ class AppInEnv(object):
         scenario = usable_scenario.instance
         result = scenario.run()
         scenario.wait()
+        scenario.cleanup()
         return result

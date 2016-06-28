@@ -51,13 +51,10 @@ class ScenarioVnc(ScenarioWM):
         if wm_fail:
             return wm_fail
 
-        self.ensure_dir(self.opts.xlogfile)
-        logfile = open(self.opts.xlogfile, 'w+')
-
         # store VNC password in vauthfile
         cmd = [ self.opts.vncpasswd, '-storepasswd', self.password,
                 self.opts.vauthfile ]
-        self.cmd_wait(cmd, logfile=logfile)
+        self.cmd_wait(cmd)
 
         # start VNC server
         cmd = [ self.opts.vnc, '-desktop', self.conf.cluster_name, '-xkb',
@@ -66,9 +63,7 @@ class ScenarioVnc(ScenarioWM):
                 '-auth', self.opts.xauthfile, '-rfbport', str(self.rfbport),
                 '-rfbwait', '30000', '-localhost',
                 '-rfbauth', self.opts.vauthfile,
-                '-oa', self.opts.xlogfile, '-noxdamage' ]
-        self.cmd_run_bg(cmd, logfile=logfile)
-
-        logfile.close()
+                '-oa', self.opts.logfile, '-noxdamage' ]
+        self.cmd_run_bg(cmd)
 
         return 0
