@@ -236,6 +236,9 @@ class Scenario(object):
                 process.wait()
 
     def wait(self):
+        # do not wait in dry-run mode
+        if self.conf.dryrun:
+            return
         logger.debug("now waiting for processes to end")
         while True:
             for process in self.pids:
