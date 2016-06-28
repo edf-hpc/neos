@@ -228,7 +228,6 @@ class Scenario(object):
             return check_output(cmd, shell=shell)
 
     def kill(self, exception):
-        logger.info("now killing other processes")
         for process in self.pids:
             if process is not exception:
                 logger.debug("killing process %s", process.pid)
@@ -240,15 +239,20 @@ class Scenario(object):
         if self.conf.dryrun:
             return
         logger.debug("now waiting for processes to end")
-        while True:
-            for process in self.pids:
-                returncode = process.poll()
-                if returncode is not None:
-                    logger.info("process pid %d ends with return code: %d", process.pid, returncode)
-                    self.kill(process)
-                    return
-                else:
-                    sleep(0.5)
+        try:
+            while True:
+                for process in self.pids:
+                    returncode = process.poll()
+                    if returncode is not None:
+                        logger.info("process pid %d ends with return code: %d", process.pid, returncode)
+                        logger.info("now killing other processes")
+                        self.kill(process)
+                        return
+                    else:
+                        sleep(0.5)
+        except KeyboardInterrupt, e:
+            logger.info("SIGINT received, killing all processes")
+            self.kill(None)
 
     def cleanup(self):
         logger.debug("cleaning up before exiting")
