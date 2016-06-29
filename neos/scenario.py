@@ -238,6 +238,9 @@ class Scenario(object):
         # do not wait in dry-run mode
         if self.conf.dryrun:
             return
+        # do not wait if nothing to wait for
+        if len(self.pids) == 0:
+            return
         logger.debug("now waiting for processes to end")
         try:
             while True:
