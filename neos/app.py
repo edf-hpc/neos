@@ -141,6 +141,11 @@ class App(object):
 
         assert self.conf.module is not None
 
+        # if user specified additional module dir, prepend it to MODULEPATH
+        if self.conf.modules_dir is not None:
+            logger.debug("prepending %s to MODULEPATH", self.conf.modules_dir)
+            os.environ['MODULEPATH'] = self.conf.modules_dir + os.pathsep + os.environ['MODULEPATH']
+
         cmd = [self.conf.cmd_mcmd, self.conf.cmd_shell, 'load', self.conf.module ]
         logger.debug("run cmd: %s", ' '.join(cmd))
 
