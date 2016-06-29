@@ -35,6 +35,7 @@ import string
 import random
 import os
 
+
 def gen_password(length=8):
     """Generate a random password with ASCII letters (uppercase and downcase)
        and digits."""
@@ -42,6 +43,7 @@ def gen_password(length=8):
     chars = string.ascii_letters + string.digits
     random.seed = (os.urandom(1024))
     return ''.join(random.choice(chars) for i in range(length))
+
 
 class Singleton(type):
     """Class to use as metaclass by all classes that want to be a singleton."""
@@ -51,8 +53,10 @@ class Singleton(type):
     def __call__(cls, *args, **kwargs):
 
         if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = \
+                super(Singleton, cls).__call__(*args, **kwargs)
         return cls._instances[cls]
+
 
 class FakePopen(object):
     """Fake Popen class returned by Scenario.run_cmd_bg() in dry mode so that

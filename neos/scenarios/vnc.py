@@ -33,11 +33,12 @@
 
 from neos.scenarios.wm import ScenarioWM
 
+
 class ScenarioVnc(ScenarioWM):
 
-    OPTS = [ 'vauthfile:str:${BASEDIR}/vncpass_${JOBID}',
-             'vncpasswd:str:x11vnc',
-             'vnc:str:x11vnc' ]
+    OPTS = ['vauthfile:str:${BASEDIR}/vncpass_${JOBID}',
+            'vncpasswd:str:x11vnc',
+            'vnc:str:x11vnc']
 
     def __init__(self):
 
@@ -52,19 +53,19 @@ class ScenarioVnc(ScenarioWM):
             return wm_fail
 
         # store VNC password in vauthfile
-        cmd = [ self.opts.vncpasswd, '-storepasswd', self.password,
-                self.opts.vauthfile ]
+        cmd = [self.opts.vncpasswd, '-storepasswd', self.password,
+               self.opts.vauthfile]
         self.cmd_wait(cmd)
         self.register_tmpfile(self.opts.vauthfile)
 
         # start VNC server
-        cmd = [ self.opts.vnc, '-desktop', self.conf.cluster_name, '-xkb',
-                '-ncache', '0', '-scale', self.opts.resolution, '-once',
-                '-display', ":%d" % (self.display),
-                '-auth', self.opts.xauthfile, '-rfbport', str(self.rfbport),
-                '-rfbwait', '30000', '-localhost',
-                '-rfbauth', self.opts.vauthfile,
-                '-oa', self.opts.logfile, '-noxdamage' ]
+        cmd = [self.opts.vnc, '-desktop', self.conf.cluster_name, '-xkb',
+               '-ncache', '0', '-scale', self.opts.resolution, '-once',
+               '-display', ":%d" % (self.display),
+               '-auth', self.opts.xauthfile, '-rfbport', str(self.rfbport),
+               '-rfbwait', '30000', '-localhost',
+               '-rfbauth', self.opts.vauthfile,
+               '-oa', self.opts.logfile, '-noxdamage']
         self.cmd_run_bg(cmd)
 
         return 0

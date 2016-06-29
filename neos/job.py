@@ -43,8 +43,10 @@ from pytz import timezone
 
 from neos.utils import Singleton
 
+
 def localtz():
     return timezone(time.tzname[0])
+
 
 class SlurmJob(object):
 
@@ -102,13 +104,13 @@ class SlurmJob(object):
         """Dump job at debug level."""
 
         logger.debug("job data:")
-        for attr in [ 'jobid',
-                      'procid',
-                      'nodes',
-                      'partition',
-                      'shared',
-                      'end' ]:
+        for attr in ['jobid',
+                     'procid',
+                     'nodes',
+                     'partition',
+                     'shared',
+                     'end']:
             logger.debug(">> %s: %s", attr, str(getattr(self, attr)))
 
 
-Job = SlurmJob # alias
+Job = SlurmJob  # alias

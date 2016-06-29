@@ -38,6 +38,7 @@ from string import Template
 from neos.job import Job
 from neos.conf import Conf
 
+
 class ScenarioOpts(object):
 
     def __init__(self):
@@ -74,8 +75,8 @@ class ScenarioOpts(object):
         # since some variables are unknown.
         if job.unknown:
             return value
-        placeholders = { 'BASEDIR': conf.base_dir,
-                         'JOBID': job.jobid }
+        placeholders = {'BASEDIR': conf.base_dir,
+                        'JOBID': job.jobid}
         return tpl.substitute(placeholders)
 
     @staticmethod
@@ -89,9 +90,9 @@ class ScenarioOpts(object):
 
     @staticmethod
     def _parse_bool(bool_s):
-        if bool_s in ['true', 'True', 'yes', 'y', '1' ]:
+        if bool_s in ['true', 'True', 'yes', 'y', '1']:
             return True
-        elif bool_s in ['false', 'False', 'no', 'n', '0' ]:
+        elif bool_s in ['false', 'False', 'no', 'n', '0']:
             return False
         else:
             raise TypeError("unable to parse boolean value %s" % (bool_s))
@@ -145,6 +146,7 @@ class ScenarioOpts(object):
             return (None, None)
 
         return (opt_name, opt_val)
+
 
 class ScenarioOptParam(object):
 

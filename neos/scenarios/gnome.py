@@ -33,6 +33,7 @@
 
 from neos.scenarios.vnc import ScenarioVnc
 
+
 class ScenarioGnome(ScenarioVnc):
 
     NAME = 'gnome'

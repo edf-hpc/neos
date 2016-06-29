@@ -33,13 +33,14 @@
 
 from neos.scenarios.wm import ScenarioWM
 
+
 class ScenarioSalome(ScenarioWM):
 
     NAME = 'salome'
-    OPTS = [ 'wm:str:xfce4-session',
-             'resolution:str:4096x4096',
-             'paraviewpath:str:/opt/paraview/3.14',
-             'salomepath:str:/opt/salome/7.2.0/appli_V7_2_0' ]
+    OPTS = ['wm:str:xfce4-session',
+            'resolution:str:4096x4096',
+            'paraviewpath:str:/opt/paraview/3.14',
+            'salomepath:str:/opt/salome/7.2.0/appli_V7_2_0']
 
     def __init__(self):
 
@@ -52,16 +53,16 @@ class ScenarioSalome(ScenarioWM):
             return wm_fail
 
         if self.job.shared:
-            vglrun = ['vglrun', '-display', ':0' ]
+            vglrun = ['vglrun', '-display', ':0']
         else:
             vglrun = None
 
         # Run pvserver command
-        cmd = [ '%s/runSession' % (self.opts.salomepath),
-                'mpirun', '-x', "DISPLAY=:%s" % (self.display),
-                "%s/bin/pvserver" % (self.opts.paraviewpath),
-                "--connect-id=%s" % (self.display),
-                '-rc', "-ch=%s" % (self.srcip) ]
+        cmd = ['%s/runSession' % (self.opts.salomepath),
+               'mpirun', '-x', "DISPLAY=:%s" % (self.display),
+               "%s/bin/pvserver" % (self.opts.paraviewpath),
+               "--connect-id=%s" % (self.display),
+               '-rc', "-ch=%s" % (self.srcip)]
         # insert vglrun command if enable
         if vglrun is not None:
             cmd[3:3] = vglrun

@@ -40,6 +40,7 @@ import os
 from neos.version import __version__
 from neos.utils import Singleton
 
+
 class AppConf(object):
 
     __metaclass__ = Singleton
@@ -77,29 +78,30 @@ class AppConf(object):
         """Dump config at debug level."""
 
         logger.debug("app conf:")
-        for attr in [ 'version',
-                      'cluster_name',
-                      'cluster_partition',
-                      'wan_prefix',
-                      'scenario_dir',
-                      'base_dir',
-                      'cmd_inenv',
-                      'cmd_mcmd',
-                      'cmd_shell',
-                      'print_version',
-                      'list_scenarios',
-                      'log',
-                      'keep',
-                      'debug',
-                      'dryrun',
-                      'scenario_user',
-                      'scenario',
-                      'modules_dir',
-                      'module',
-                      'opts' ]:
+        for attr in ['version',
+                     'cluster_name',
+                     'cluster_partition',
+                     'wan_prefix',
+                     'scenario_dir',
+                     'base_dir',
+                     'cmd_inenv',
+                     'cmd_mcmd',
+                     'cmd_shell',
+                     'print_version',
+                     'list_scenarios',
+                     'log',
+                     'keep',
+                     'debug',
+                     'dryrun',
+                     'scenario_user',
+                     'scenario',
+                     'modules_dir',
+                     'module',
+                     'opts']:
             logger.debug(">> %s: %s", attr, getattr(self, attr))
 
-Conf = AppConf # alias
+Conf = AppConf  # alias
+
 
 class ConfLoader(object):
 

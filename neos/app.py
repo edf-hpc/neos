@@ -46,6 +46,7 @@ from neos.conf import Conf, ConfLoader
 from neos.args import AppArgs
 from neos.job import Job
 
+
 class Launcher(object):
     """Launcher class is responsible of initializing runtime configuration
        based on configuration file and arguments, logger and then launching
@@ -126,6 +127,7 @@ class Launcher(object):
         app = self.app(self.conf, self.job)
         return app.run()
 
+
 class App(object):
     """NEOS main application directly launched by the users. This application
        is responsible of loading the environment module (if specified by user)
@@ -144,9 +146,11 @@ class App(object):
         # if user specified additional module dir, prepend it to MODULEPATH
         if self.conf.modules_dir is not None:
             logger.debug("prepending %s to MODULEPATH", self.conf.modules_dir)
-            os.environ['MODULEPATH'] = self.conf.modules_dir + os.pathsep + os.environ['MODULEPATH']
+            os.environ['MODULEPATH'] = self.conf.modules_dir + os.pathsep + \
+                os.environ['MODULEPATH']
 
-        cmd = [self.conf.cmd_mcmd, self.conf.cmd_shell, 'load', self.conf.module ]
+        cmd = [self.conf.cmd_mcmd, self.conf.cmd_shell,
+               'load', self.conf.module]
         logger.debug("run cmd: %s", ' '.join(cmd))
 
         (pipe_out, pipe_in) = os.pipe()
@@ -159,11 +163,13 @@ class App(object):
         # Run `exec python` in bash to exec it without forking. This removes
         # bash process from the process tree and the App can easily send
         # signals to AppInEnv.
-        cmd = "exec python %s %s" % (self.conf.cmd_inenv, ' '.join(sys.argv[1:]))
+        cmd = "exec python %s %s" % (self.conf.cmd_inenv,
+                                     ' '.join(sys.argv[1:]))
         logger.debug("exec in %s: %s", self.conf.cmd_shell, cmd)
         pipe_w.write(cmd + ';')
         pipe_w.close()
-        p_inenv = Popen([self.conf.cmd_shell], stdin=pipe_r, stdout=sys.stdout, stderr=sys.stderr)
+        p_inenv = Popen([self.conf.cmd_shell],
+                        stdin=pipe_r, stdout=sys.stdout, stderr=sys.stderr)
         pipe_r.close()
 
         try:
@@ -174,6 +180,7 @@ class App(object):
             p_inenv.send_signal(signal.SIGINT)
             return 1
         return returncode
+
 
 class AppInEnv(object):
 
@@ -214,7 +221,7 @@ class AppInEnv(object):
                      module_file, module_dir)
         try:
             (filemod, pathname, description) = \
-                imp.find_module(module_file, [ module_dir ])
+                imp.find_module(module_file, [module_dir])
             logger.debug("find_module: filemod: %s pathname: %s",
                          str(filemod), pathname)
         except ImportError, e:
@@ -235,7 +242,8 @@ class AppInEnv(object):
         # find usable scenario among module members
         for (elem_name, elem_type) in inspect.getmembers(module):
             if inspect.isclass(elem_type) and issubclass(elem_type, Scenario) \
-                and elem_type is not Scenario and hasattr(elem_type, 'NAME'):
+               and elem_type is not Scenario and hasattr(elem_type, 'NAME'):
+
                 logger.debug("loaded usable scenario: %s", elem_name)
                 usable_scenario = \
                     UsableScenario(elem_type.NAME, elem_name, elem_type)

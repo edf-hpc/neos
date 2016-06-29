@@ -34,10 +34,11 @@
 import os
 from neos import Scenario
 
+
 class ScenarioWM(Scenario):
 
-    OPTS = [ 'xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
-             'resolution:str:1024x768' ]
+    OPTS = ['xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
+            'resolution:str:1024x768']
 
     def __init__(self):
 
@@ -45,28 +46,28 @@ class ScenarioWM(Scenario):
 
     def _run_wm(self, wm):
 
-        cookie = self.cmd_output([ 'mcookie' ])
+        cookie = self.cmd_output(['mcookie'])
 
         # create empty xauthfile
         self.create_file(self.opts.xauthfile)
         self.register_tmpfile(self.opts.xauthfile)
 
-        cmd = [ 'xauth', '-f', self.opts.xauthfile, '-q', 'add',
-                ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie ]
+        cmd = ['xauth', '-f', self.opts.xauthfile, '-q', 'add',
+               ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie]
         self.cmd_wait(cmd)
 
         if self.display == 0:
-            cmd = [ 'xrandr', '-d', ':0', '--fb', self.opts.resolution ]
+            cmd = ['xrandr', '-d', ':0', '--fb', self.opts.resolution]
         else:
-            cmd = [ 'Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
-                    "%sx24+32" % (self.opts.resolution),
-                    '-auth', self.opts.xauthfile ]
+            cmd = ['Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
+                   "%sx24+32" % (self.opts.resolution),
+                   '-auth', self.opts.xauthfile]
         self.cmd_run_bg(cmd)
 
         # start window manager
         os.environ['DISPLAY'] = ":%s" % (self.display)
-        os.environ['XAUTHORITY'] = self.opts.xauthfile;
-        cmd = [ 'dbus-launch', '--exit-with-session', wm ]
+        os.environ['XAUTHORITY'] = self.opts.xauthfile
+        cmd = ['dbus-launch', '--exit-with-session', wm]
         self.cmd_run_bg(cmd)
 
         self.sleep(1)

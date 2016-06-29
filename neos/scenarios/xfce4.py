@@ -33,6 +33,7 @@
 
 from neos.scenarios.vnc import ScenarioVnc
 
+
 class ScenarioXfce4(ScenarioVnc):
 
     NAME = 'xfce4'
@@ -43,4 +44,4 @@ class ScenarioXfce4(ScenarioVnc):
 
     def run(self):
 
-        return self._run_vnc('xfce4-session') 
+        return self._run_vnc('xfce4-session')

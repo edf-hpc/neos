@@ -33,12 +33,13 @@
 
 from neos.scenarios.wm import ScenarioWM
 
+
 class ScenarioParaview(ScenarioWM):
 
     NAME = 'paraview'
-    OPTS = [ 'wm:str:xfce4-session',
-             'resolution:str:4096x4096',
-             'paraviewpath:str:/opt/paraview/3.14' ]
+    OPTS = ['wm:str:xfce4-session',
+            'resolution:str:4096x4096',
+            'paraviewpath:str:/opt/paraview/3.14']
 
     def __init__(self):
 
@@ -51,15 +52,15 @@ class ScenarioParaview(ScenarioWM):
             return wm_fail
 
         if self.job.shared:
-            vglrun = ['vglrun', '-display', ':0' ]
+            vglrun = ['vglrun', '-display', ':0']
         else:
             vglrun = None
 
         # Run pvserver command
-        cmd = [ 'mpirun', '-x', "DISPLAY=:%s" % (self.display),
-                "%s/bin/pvserver" % (self.opts.paraviewpath),
-                "--connect-id=%s" % (self.display),
-                '-rc', "-ch=%s" % (self.srcip) ]
+        cmd = ['mpirun', '-x', "DISPLAY=:%s" % (self.display),
+               "%s/bin/pvserver" % (self.opts.paraviewpath),
+               "--connect-id=%s" % (self.display),
+               '-rc', "-ch=%s" % (self.srcip)]
         # insert vglrun command if enable
         if vglrun is not None:
             cmd[3:3] = vglrun

@@ -46,21 +46,23 @@ from neos.opts import ScenarioOpts
 from neos.conf import Conf
 from neos.job import Job
 
+
 class Scenario(object):
 
     MAGIC_NUMBER = 59530
 
-    OPTS = [ 'logfile:str:${BASEDIR}/Xlog_${JOBID}' ]
+    OPTS = ['logfile:str:${BASEDIR}/Xlog_${JOBID}']
 
     def __init__(self):
 
         self.conf = Conf()
         self.job = Job()
-        self.pids = set() # bg processes
+        self.pids = set()  # bg processes
         self.tmpfiles = set()
         self.password = gen_password()
         self.srcip = os.environ['SSH_CONNECTION'].split(' ')[0]
-        self.rinip = socket.gethostbyname(self.conf.wan_prefix + socket.gethostname())
+        self.rinip = socket.gethostbyname(self.conf.wan_prefix +
+                                          socket.gethostname())
 
         self.opts = ScenarioOpts()
         self.declare_opts()
@@ -80,7 +82,8 @@ class Scenario(object):
 
     def declare_opts_cls(self, cls):
 
-        if cls == object: return
+        if cls == object:
+            return
 
         if hasattr(cls, 'OPTS'):
             for opt_s in cls.OPTS:
@@ -89,7 +92,6 @@ class Scenario(object):
 
         for xcls in cls.__bases__:
             self.declare_opts_cls(xcls)
-
 
     def set_opts(self):
 
@@ -150,7 +152,7 @@ class Scenario(object):
         root.appendChild(pid)
 
         print doc.toprettyxml()
-        sys.stdout.flush() # force flush to avoid buffering
+        sys.stdout.flush()  # force flush to avoid buffering
 
     @property
     def display(self):
@@ -160,12 +162,13 @@ class Scenario(object):
 
     @property
     def rfbport(self):
-        return self.job.jobid % Scenario.MAGIC_NUMBER + 1024;
+        return self.job.jobid % Scenario.MAGIC_NUMBER + 1024
 
     def ensure_dir(self, filename):
         """Ensure the parent directory of the filename in parameter exists so
            that the file can be created witout problem then."""
-        dirname = os.path.dirname(os.path.abspath(os.path.expanduser(filename)))
+        dirname = os.path.dirname(
+            os.path.abspath(os.path.expanduser(filename)))
         if not os.path.isdir(dirname):
             logger.debug("creating directory %s", dirname)
             os.makedirs(dirname)
@@ -199,9 +202,11 @@ class Scenario(object):
         else:
             logger.debug("run cmd: %s", ' '.join(cmd))
             if self.conf.log:
-                process = Popen(cmd, shell=shell, stdout=self.logfile, stderr=self.logfile)
+                process = Popen(cmd, shell=shell,
+                                stdout=self.logfile, stderr=self.logfile)
             else:
-                process = Popen(cmd, shell=shell, stdout=sys.stdout, stderr=sys.stderr)
+                process = Popen(cmd, shell=shell,
+                                stdout=sys.stdout, stderr=sys.stderr)
             self.pids.add(process)
 
     def cmd_wait(self, cmd, shell=False):
@@ -212,9 +217,11 @@ class Scenario(object):
         else:
             logger.debug("run cmd: %s", ' '.join(cmd))
             if self.conf.log:
-                return call(cmd, shell=shell, stdout=self.logfile, stderr=self.logfile)
+                return call(cmd, shell=shell,
+                            stdout=self.logfile, stderr=self.logfile)
             else:
-                return call(cmd, shell=shell, stdout=sys.stdout, stderr=sys.stderr)
+                return call(cmd, shell=shell,
+                            stdout=sys.stdout, stderr=sys.stderr)
 
     def cmd_output(self, cmd, shell=False):
 
@@ -245,7 +252,8 @@ class Scenario(object):
                 for process in self.pids:
                     returncode = process.poll()
                     if returncode is not None:
-                        logger.info("process pid %d ends with return code: %d", process.pid, returncode)
+                        logger.info("process pid %d ends with return code: %d",
+                                    process.pid, returncode)
                         logger.info("now killing other processes")
                         self.kill(process)
                         return
@@ -265,6 +273,7 @@ class Scenario(object):
                 if os.path.exists(filename):
                     logger.debug("removing tmp file %s", filename)
                     os.remove(filename)
+
 
 class UsableScenario(object):
 
