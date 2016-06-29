@@ -142,8 +142,6 @@ class Scenario(object):
         root.appendChild(config)
 
         enddatetime = doc.createElement('enddatetime')
-        #enddatetime.appendChild(doc.createTextNode(self.job.end.strftime('%Y-%m-%d %H:%M:%S %z')))
-        #enddatetime.appendChild(doc.createTextNode(self.job.end.strftime('%z')))
         enddatetime.appendChild(doc.createTextNode(self.job.end.isoformat()))
         root.appendChild(enddatetime)
 
