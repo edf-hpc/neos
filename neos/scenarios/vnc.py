@@ -31,10 +31,15 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
+import sys
+from xml.dom.minidom import Document
+
 from neos.scenarios.wm import ScenarioWM
 
 
 class ScenarioVnc(ScenarioWM):
+
+    MAGIC_NUMBER = 59530
 
     OPTS = ['vauthfile:str:${BASEDIR}/vncpass_${JOBID}',
             'vncpasswd:str:x11vnc',
@@ -43,6 +48,65 @@ class ScenarioVnc(ScenarioWM):
     def __init__(self):
 
         super(ScenarioVnc, self).__init__()
+
+    @property
+    def rfbport(self):
+        return self.job.jobid % ScenarioVnc.MAGIC_NUMBER + 1024
+
+    def dump_xml(self):
+        """Dump scenario information in XML format, something like:
+           <$job_partition>
+             <nodes>
+               <node>node1</node>
+               <node>node2</node>
+             </nodes>
+             <config>
+               <node>$firstnode</node>
+               <ipaddress>$iprin</ipaddress>
+               <session>$rfbport</session>
+               <password>$mdp</password>
+             </config>
+             <enddatetime>$daylimit</enddatetime>
+             <pid>$jobid</pid>
+           </$job_partition>
+        """
+        doc = Document()
+        root = doc.createElement(self.conf.cluster_partition)
+        doc.appendChild(root)
+
+        nodes = doc.createElement('nodes')
+        root.appendChild(nodes)
+
+        for nodename in self.job.nodes:
+            node = doc.createElement('node')
+            node.appendChild(doc.createTextNode(nodename))
+            nodes.appendChild(node)
+
+        config = doc.createElement('config')
+        config_elmt = doc.createElement('node')
+        config_elmt.appendChild(doc.createTextNode(self.job.firstnode))
+        config.appendChild(config_elmt)
+        config_elmt = doc.createElement('ipaddress')
+        config_elmt.appendChild(doc.createTextNode(self.rinip))
+        config.appendChild(config_elmt)
+        config_elmt = doc.createElement('session')
+        config_elmt.appendChild(doc.createTextNode(str(self.rfbport)))
+        config.appendChild(config_elmt)
+        config_elmt = doc.createElement('password')
+        config_elmt.appendChild(doc.createTextNode(self.password))
+        config.appendChild(config_elmt)
+        root.appendChild(config)
+
+        enddatetime = doc.createElement('enddatetime')
+        enddatetime.appendChild(doc.createTextNode(self.job.end.isoformat()))
+        root.appendChild(enddatetime)
+
+        pid = doc.createElement('pid')
+        pid.appendChild(doc.createTextNode(str(self.job.jobid)))
+        root.appendChild(pid)
+
+        print doc.toprettyxml()
+        sys.stdout.flush()  # force flush to avoid buffering
 
     def _run_vnc(self, wm):
 

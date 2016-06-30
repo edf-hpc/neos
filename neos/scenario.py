@@ -39,8 +39,6 @@ import sys
 import os
 import socket
 
-from xml.dom.minidom import Document
-
 from neos.utils import gen_password, FakePopen
 from neos.opts import ScenarioOpts
 from neos.conf import Conf
@@ -48,8 +46,6 @@ from neos.job import Job
 
 
 class Scenario(object):
-
-    MAGIC_NUMBER = 59530
 
     OPTS = ['logfile:str:${BASEDIR}/Xlog_${JOBID}']
 
@@ -98,71 +94,6 @@ class Scenario(object):
         if self.conf.opts is not None:
             for opt_s in self.conf.opts:
                 self.opts.set(opt_s)
-
-    def dump_xml(self):
-        """Dump scenario information in XML format, something like:
-           <$job_partition>
-             <nodes>
-               <node>node1</node>
-               <node>node2</node>
-             </nodes>
-             <config>
-               <node>$firstnode</node>
-               <ipaddress>$iprin</ipaddress>
-               <session>$rfbport</session>
-               <password>$mdp</password>
-             </config>
-             <enddatetime>$daylimit</enddatetime>
-             <pid>$jobid</pid>
-           </$job_partition>
-        """
-        doc = Document()
-        root = doc.createElement(self.conf.cluster_partition)
-        doc.appendChild(root)
-
-        nodes = doc.createElement('nodes')
-        root.appendChild(nodes)
-
-        for nodename in self.job.nodes:
-            node = doc.createElement('node')
-            node.appendChild(doc.createTextNode(nodename))
-            nodes.appendChild(node)
-
-        config = doc.createElement('config')
-        config_elmt = doc.createElement('node')
-        config_elmt.appendChild(doc.createTextNode(self.job.firstnode))
-        config.appendChild(config_elmt)
-        config_elmt = doc.createElement('ipaddress')
-        config_elmt.appendChild(doc.createTextNode(self.rinip))
-        config.appendChild(config_elmt)
-        config_elmt = doc.createElement('session')
-        config_elmt.appendChild(doc.createTextNode(str(self.rfbport)))
-        config.appendChild(config_elmt)
-        config_elmt = doc.createElement('password')
-        config_elmt.appendChild(doc.createTextNode(self.password))
-        config.appendChild(config_elmt)
-        root.appendChild(config)
-
-        enddatetime = doc.createElement('enddatetime')
-        enddatetime.appendChild(doc.createTextNode(self.job.end.isoformat()))
-        root.appendChild(enddatetime)
-
-        pid = doc.createElement('pid')
-        pid.appendChild(doc.createTextNode(str(self.job.jobid)))
-        root.appendChild(pid)
-
-        print doc.toprettyxml()
-        sys.stdout.flush()  # force flush to avoid buffering
-
-    @property
-    def display(self):
-        if not self.job.shared:
-            return 0
-        return self.job.jobid % Scenario.MAGIC_NUMBER + 1
-
-    @property
-    def rfbport(self):
-        return self.job.jobid % Scenario.MAGIC_NUMBER + 1024
 
     def ensure_dir(self, filename):
         """Ensure the parent directory of the filename in parameter exists so

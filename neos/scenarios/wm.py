@@ -37,12 +37,20 @@ from neos import Scenario
 
 class ScenarioWM(Scenario):
 
+    MAGIC_NUMBER = 59530
+
     OPTS = ['xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
             'resolution:str:1024x768']
 
     def __init__(self):
 
         super(ScenarioWM, self).__init__()
+
+    @property
+    def display(self):
+        if not self.job.shared:
+            return 0
+        return self.job.jobid % ScenarioWM.MAGIC_NUMBER + 1
 
     def _run_wm(self, wm):
 
