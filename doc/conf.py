@@ -215,7 +215,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'neos', u'NEOS Documentation',
+    ('usage', 'neos', u'NEOS Documentation',
      [u'CCN-HPC'], 1)
 ]
 

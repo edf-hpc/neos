@@ -31,9 +31,7 @@ license.
 .. toctree::
    :maxdepth: 2
 
-   architecture
    installation
-   configuration
    usage
    api
 
