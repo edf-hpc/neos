@@ -1,0 +1,430 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage guide &mdash; NEOS 0.0.6 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NEOS 0.0.6 documentation" href="index.html"/>
+        <link rel="next" title="Scenario API" href="api.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> NEOS</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#debian-packages">Debian packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Usage guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#global-options">Global options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-modules">Environment modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#specific-scenarios">Specific scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-with-slurm">Integration with Slurm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#controlling-output">Controlling output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Scenario API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#optional-parameters">Optional parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#abstract-scenarios">Abstract scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#reference-api">Reference API</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">NEOS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Usage guide</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/usage.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="usage-guide">
+<span id="usage"></span><h1>Usage guide<a class="headerlink" href="#usage-guide" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="synopsis">
+<h2>Synopsis<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<p><strong>neos</strong> <em>options</em> [-s &#8211;scenario <em>scenario</em>]</p>
+</div>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>NEOS is a software which provides a generic framework to manage job sessions
+on HPC clusters.</p>
+<p>The framework is based on scenarios. A scenario defines the sequential steps to
+properly setup and initialize the job session. Users select the scenario for
+their jobs and can even define their own scenarios. The frawework can manage a
+wide variety of workloads from classic MPI parallel computing to advanced
+visualization sessions with 3D remote rendering.</p>
+</div>
+<div class="section" id="global-options">
+<h2>Global options<a class="headerlink" href="#global-options" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>Show help message and exit.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--version</span></kbd></td>
+<td>Print NEOS version and exit.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d</span>, <span class="option">--debug</span></kbd></td>
+<td>Enable debug output.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--dry-run</span></kbd></td>
+<td>Dry-run mode: print commands to run without actually running them.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-l</span>, <span class="option">--log</span></kbd></td>
+<td>Log commands output instead of printing on stdout/stderr.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-k</span>, <span class="option">--keep</span></kbd></td>
+<td>Do not remove temporary files generated by NEOS.</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-L</span>, <span class="option">--list</span></kbd></td>
+<td>List available scenarios with their optional parameters.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-s</span>, <span class="option">--scenario=<var>SCENARIO</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Name of scenario to run.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-S</span>, <span class="option">--scenarios-dir=<var>DIR</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Path to directory with additional scenarios to load.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-m</span>, <span class="option">--module=<var>MODULE</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Name of environment module to load?</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-M</span>, <span class="option">--modules-dir=<var>DIR</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Path to directory with additional modules.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-o</span>, <span class="option">--opts=<var>OPTS</var></span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Optional parameters for scenarios.</td></tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="environment-modules">
+<h2>Environment modules<a class="headerlink" href="#environment-modules" title="Permalink to this headline">¶</a></h2>
+<p>NEOS can load system-wide and user defined environment modules files. To load
+system-wide module, just set their name with <cite>-m, &#8211;module</cite> parameter.</p>
+<p>You can also define specific environment modules files and load them with NEOS.
+For example, if you define this environment module in <em>~/modules/mymodule</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre>#%Module
+
+module-whatis {Description: My own module for my own scenario}
+
+if { ![is-loaded OtherModule/0.0.1] } {
+    module load OtherModule/0.0.1
+}
+
+prepend-path    PATH            ~/bin
+
+setenv  ENVFORSCENARIO          &quot;testenv&quot;
+</pre></div>
+</div>
+<p>The module file first contains a description and a dependency to another module
+named <strong>OtherModule/0.0.1</strong>. Then, it prepends the <cite>$PATH</cite> environment variable
+with <em>~/bin</em>. Finally, it sets the <cite>$ENVFORSCENARIO</cite> with value <em>testenv</em>.
+Please refer to <strong>modules</strong> documentation for more details.</p>
+<p>This specific module file can be loaded by NEOS with the following parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre>neos --modules-dir=~/modules --module=mymodule [OPTIONS]
+</pre></div>
+</div>
+</div>
+<div class="section" id="specific-scenarios">
+<h2>Specific scenarios<a class="headerlink" href="#specific-scenarios" title="Permalink to this headline">¶</a></h2>
+<p>With NEOS, users can run scenarios available on the system but they can also
+define their own scenarios. Please refer to the scenario writing guide for
+reference.</p>
+<p>As an example, if a scenario is defined in file <em>~/scenarios/simple.py</em> and it
+is called <em>foo</em>, it can be loaded and run by NEOS using the following
+parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre>neos --scenarios-dir=~/scenarios --scenario=foo
+</pre></div>
+</div>
+</div>
+<div class="section" id="integration-with-slurm">
+<h2>Integration with Slurm<a class="headerlink" href="#integration-with-slurm" title="Permalink to this headline">¶</a></h2>
+<p>NEOS can run scenarios in Slurm job step context only. In other words, it is
+impossible to run scenario outside of jobs, except for listing scenarios and
+options, getting command line helper and printing version.</p>
+<p>To run NEOS scenarios, Slurm commands must be used.</p>
+<div class="section" id="srun-command">
+<h3>srun command<a class="headerlink" href="#srun-command" title="Permalink to this headline">¶</a></h3>
+<p>The most straighforward way to launch NEOS scenario is to use <cite>srun</cite> command
+from the frontend node. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ ssh login@cluster
+$ srun -n 4 neos
+</pre></div>
+</div>
+<p>In this example, <cite>srun</cite> will create an job allocation for 4 tasks (or CPUs) and
+launch NEOS with default scenario on those resources. Please note that you may
+need to specify other parameters (such as the partition or the QOS) depending
+on the cluster configuration.</p>
+<p>Please refer to Slurm documentation and <cite>srun</cite> manpage for reference.</p>
+</div>
+<div class="section" id="salloc-command">
+<h3>salloc command<a class="headerlink" href="#salloc-command" title="Permalink to this headline">¶</a></h3>
+<p>Slurm <cite>salloc</cite> command create a resources allocation and runs a command from
+the frontend node. By default, without any command given in parameter, it
+spawns a new shell on the frontend node within the job allocation environment.
+To run a scenario on the allocated resources, you must use <cite>srun</cite> command as
+well. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ ssh login@cluster
+$ salloc -n 4       # allocate 4 CPUs
+$ srun neos         # runs NEOS on all allocated resources
+</pre></div>
+</div>
+<p>The main advantage of this mode is that you can run multiple scenarios in one
+job allocation.</p>
+<p>Please refer to Slurm documentation and <cite>salloc</cite> manpage for reference.</p>
+</div>
+<div class="section" id="sbatch-command">
+<h3>sbatch command<a class="headerlink" href="#sbatch-command" title="Permalink to this headline">¶</a></h3>
+<p>Slurm <cite>sbatch</cite> command can submit job for later execution. It is recommanded to
+give a submission script in parameter of this command. This script specifies
+the allocation constraints. It is run on the first allocated node once the job
+is started. Here is an example of sbatch submission script <em>submit.sh</em> to run
+a NEOS scenario:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/bin/sh</span>
+<span class="c">#SBATCH -n 4</span>
+<span class="n">neos</span>
+</pre></div>
+</div>
+<p>This script can then be submited to Slurm with <cite>sbatch</cite> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sbatch submit.sh
+</pre></div>
+</div>
+<p>Please refer to Slurm documentation and <cite>sbatch</cite> manpage for reference.</p>
+</div>
+</div>
+<div class="section" id="controlling-output">
+<h2>Controlling output<a class="headerlink" href="#controlling-output" title="Permalink to this headline">¶</a></h2>
+<p>NEOS produces 2 types of outputs:</p>
+<ul class="simple">
+<li>NEOS internal output, including information, warning, errors reported by the
+software itself, as well as debug messages when <cite>-d, &#8211;debug</cite> flag is enabled
+on the command line.</li>
+<li>outputs of sub-commands launched by scenarios.</li>
+</ul>
+<p>By default, all these outputs are mixed within stdout and stderr of NEOS
+process. The sub-commands outputs can be redirected in a logfile using the
+<cite>-l, &#8211;log</cite> flag. The destination log file can be set using the <cite>&#8211;opts</cite>
+parameter like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ neos --log --opts logfile:~/neos.log
+</pre></div>
+</div>
+<p>The default value of this optional parameter can be obtained with <cite>-L, &#8211;list</cite>.</p>
+<p>As stated before, NEOS must be launched by Slurm workload manager. Slurm is
+able to manage job processes outputs in many advanced ways.</p>
+<p>By default, when run interactively, <cite>srun</cite> redirects all the programs outputs
+launched on the allocated nodes to the TTY of the user on the frontend node.
+This behaviour can be controlled using <cite>&#8211;output</cite> parameter. For example,
+outputs can be completely discarded with:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun --output=none neos [OPTIONS]
+</pre></div>
+</div>
+<p>All outputs can also be written in a logfile:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun --output=srun.log neos [OPTIONS]
+</pre></div>
+</div>
+<p>This way, <em>srun.log</em> will contain all outputs (including errors) produced by
+NEOS and all the sub-commands launched by the scenarios. The filenames can also
+contain various job related variables such as the job ID and the step ID using
+placeholders (ex: <cite>&#8211;output=srun_%j-%s_out.log</cite>). Please refer to <cite>srun</cite>
+manpage for the full list of available placeholders.</p>
+<p>It is also possible to separate stdout and stderr using the <cite>&#8211;error</cite>
+parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun --output=srun_%j-%s_out.log --error=srun_%j-%s_err.log neos [OPTIONS]
+</pre></div>
+</div>
+<p>The outputs of batch jobs submitted with the <cite>sbatch</cite> command are redirected by
+default to the file <em>./slurm-%j.out</em>. Just as well as <cite>srun</cite> command, the
+<cite>sbatch</cite> command has the <cite>&#8211;output</cite> and <cite>&#8211;error</cite> parameters to control the
+destination of the outputs.</p>
+<p>Please refer to <cite>sbatch</cite> manpage for all details.</p>
+<p>Slurm and NEOS parameters can be combined to separate all types of outputs:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun --output=srun-out.log --error=srun-err.log neos --log --opts=logfile:~/neos.log
+</pre></div>
+</div>
+<p>With the previous commands, the content of the various files are:</p>
+<ul class="simple">
+<li><em>srun-out.log</em> contains the information (and eventually debug if enabled)
+produced internally by NEOS,</li>
+<li><em>srun-err.log</em> contains the warning and errors produced internally by NEOS,</li>
+<li><em>neos.log</em> contains the outputs the sub-commands launched by NEOS scenarios.</li>
+</ul>
+</div>
+<div class="section" id="examples">
+<span id="id1"></span><h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Run default scenario:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">neos</span>
+</pre></div>
+</div>
+<p>List available scenarios with their optional parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">neos</span> <span class="o">--</span><span class="nb">list</span>
+</pre></div>
+</div>
+<p>Run <em>gnome</em> scenario with specific resolution:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --scenario=gnome --opts=resolution:1280x1024
+</pre></div>
+</div>
+<p>Run <em>paraview</em> scenario within <em>openmpi-1.10</em> module environment:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --scenario=paraview --module=openmpi-1.10
+</pre></div>
+</div>
+<p>Run user-specific <em>foo</em> scenario within <em>bar</em> specific module in dry-run mode:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --dry-run --scenario-dirs=~/scenarios --scenario=foo --modules-dir=~/modules --module=bar
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="Scenario API"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, CCN-HPC.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

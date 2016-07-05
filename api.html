@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Scenario API &mdash; NEOS 0.0.6 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NEOS 0.0.6 documentation" href="index.html"/>
+        <link rel="prev" title="Usage guide" href="usage.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> NEOS</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-sources">From sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#debian-packages">Debian packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#global-options">Global options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#environment-modules">Environment modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#specific-scenarios">Specific scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#integration-with-slurm">Integration with Slurm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#controlling-output">Controlling output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Scenario API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-parameters">Optional parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#abstract-scenarios">Abstract scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-api">Reference API</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">NEOS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Scenario API</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/api.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="scenario-api">
+<h1>Scenario API<a class="headerlink" href="#scenario-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
+<p>A scenario is a Python sub-class of the NEOS Scenario class. There are only two
+requirements to be a valid and usable scenario for the application:</p>
+<ul class="simple">
+<li>Have a <tt class="docutils literal"><span class="pre">NAME</span></tt> class attribute,</li>
+<li>Implement a <tt class="docutils literal"><span class="pre">run()</span></tt> method that returns an exit code.</li>
+</ul>
+<p>A minimal Scenario would look like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">neos</span> <span class="kn">import</span> <span class="n">Scenario</span>
+
+<span class="k">class</span> <span class="nc">ScenarioMinimal</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s">&#39;minimal&#39;</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>The name of the class has no real importance. The name of the scenario across
+NEOS will be the value of the <strong>NAME</strong> class attribute.</p>
+<p>NEOS considers the scenario run failed when the <tt class="docutils literal"><span class="pre">run()</span></tt> method returns
+non-0 exit code. This exit code is also the exit code returned by <tt class="docutils literal"><span class="pre">neos</span></tt>
+command.</p>
+<p>If you save this scenario code into <em>~/scenarios/minimal.py</em>, you can run it
+with the following command:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --scenarios-dir=~/scenarios --scenario=minimal
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional-parameters">
+<h2>Optional parameters<a class="headerlink" href="#optional-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The scenarios can be configured at runtime with optional parameters. The
+declaration of optional parameters is done through the <tt class="docutils literal"><span class="pre">OPTS</span></tt> class
+attribute. As an example, optional paramters can be added to the previous
+<em>minimal</em> scenario this way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">neos</span> <span class="kn">import</span> <span class="n">Scenario</span>
+
+<span class="k">class</span> <span class="nc">ScenarioMinimal</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s">&#39;minimal&#39;</span>
+    <span class="n">OPTS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;wait:bool:false&#39;</span><span class="p">,</span>
+            <span class="s">&#39;time:int:10&#39;</span><span class="p">,</span>
+            <span class="s">&#39;msg:str:foo&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_output</span><span class="p">([</span><span class="s">&#39;echo&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">msg</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">wait</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>The <strong>OPTS</strong> class attribute is a list of strings. Each string is a triplet of
+parameter name, type and default value separated by the &#8216;:&#8217; character.</p>
+<p>In the previous example, the scenario has 3 optional parameters:</p>
+<ul class="simple">
+<li>the boolean <strong>wait</strong> which is false by default,</li>
+<li>the integer <strong>time</strong> whose default value is 10,</li>
+<li>the string <strong>msg</strong> with default value to <em>foo</em>.</li>
+</ul>
+<p>The parameters are then accessible in the <tt class="docutils literal"><span class="pre">run()</span></tt> method as attributes of
+the opts object attribute. Ex: <tt class="docutils literal"><span class="pre">self.opts.wait</span></tt> for the <strong>wait</strong> attribute.</p>
+<p>Without options specified on <tt class="docutils literal"><span class="pre">neos</span></tt> command line, the default values are
+used. Other values can be set with <tt class="docutils literal"><span class="pre">-o,</span> <span class="pre">--opts</span></tt> parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --scenarios-dir=~/scenarios --scenario=minimal --opts=wait:false
+</pre></div>
+</div>
+<p>NEOS framework make sure parameters types are respected.</p>
+</div>
+<div class="section" id="abstract-scenarios">
+<h2>Abstract scenarios<a class="headerlink" href="#abstract-scenarios" title="Permalink to this headline">¶</a></h2>
+<p>A scenario does not need to have the Scenario base class as its direct parent
+class. As soon as one its parents inherits from the Scenario class, directly
+or not, it is valid scenario. Here comes the concept of <strong>abstract scenario</strong>.</p>
+<p>An abstract scenario is a class that inherits from the Scenario base class but
+has no <strong>NAME</strong> attribute. Those classes can define code and optional
+parameters but cannot be run directly with NEOS. They are useful to define
+generic code shared by multiple scenarios.</p>
+<p>Here is a complete example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">neos</span> <span class="kn">import</span> <span class="n">Scenario</span>
+
+<span class="k">class</span> <span class="nc">ScenarioEchoWait</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+
+    <span class="n">OPTS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;wait:bool:false&#39;</span><span class="p">,</span>
+            <span class="s">&#39;time:int:10&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_echo_wait</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_output</span><span class="p">([</span><span class="s">&#39;echo&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">wait</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+
+
+<span class="k">class</span> <span class="nc">ScenarioFoo</span><span class="p">(</span><span class="n">ScenarioEchoWait</span><span class="p">):</span>
+
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s">&#39;true&#39;</span>
+    <span class="n">OPTS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;msg:str:foo&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_echo_wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ScenarioBar</span><span class="p">(</span><span class="n">ScenarioEchoWait</span><span class="p">):</span>
+
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s">&#39;false&#39;</span>
+    <span class="n">OPTS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;msg:str:bar&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_echo_wait</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opts</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example, the <tt class="docutils literal"><span class="pre">ScenarioEchoWait</span></tt> class does not have a <strong>NAME</strong> class
+attribute. Then, NEOS consider it as an abtract scenario.</p>
+<p>The other classes <tt class="docutils literal"><span class="pre">ScenarioFoo</span></tt> and <tt class="docutils literal"><span class="pre">ScenarioBar</span></tt> inherits from the
+<tt class="docutils literal"><span class="pre">Scenario</span></tt> base class (through the <tt class="docutils literal"><span class="pre">ScenarioEchoWait</span></tt> class), have a
+<strong>NAME</strong> class attribute and define a <tt class="docutils literal"><span class="pre">run()</span></tt> method. Then, NEOS consider
+those classes as valid scenarios that can be run.</p>
+<p>Using this mechanism, <tt class="docutils literal"><span class="pre">ScenarioFoo</span></tt> and <tt class="docutils literal"><span class="pre">ScenarioBar</span></tt> can share code: they
+both use the same method <tt class="docutils literal"><span class="pre">_echo_wait()</span></tt> and the optional parameters defined
+in the <tt class="docutils literal"><span class="pre">ScenarioEchoWait</span></tt> class.</p>
+<p>Then, the scenarios can be run with:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --scenarios-dir=~/scenarios --scenario=foo
+</pre></div>
+</div>
+<p>Or:</p>
+<div class="highlight-python"><div class="highlight"><pre>srun neos --scenarios-dir=~/scenarios --scenario=bar
+</pre></div>
+</div>
+</div>
+<div class="section" id="reference-api">
+<h2>Reference API<a class="headerlink" href="#reference-api" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">run()</span></tt> method of the scenarios can run any arbitrary Python code.
+However, the parent Scenario class provides a set of methods to ease most
+common tasks and code patterns. This is highly recommended to widely use
+those methods in the source code of your scenarios in order to get the
+following benefits:</p>
+<ul class="simple">
+<li>significantly reduce the number of lines of code,</li>
+<li>integrates fully with NEOS framework and thus Slurm workload manager.</li>
+</ul>
+<p>Here are the available public methods of the base Scenario class:</p>
+<dl class="method">
+<dt id="ensure_dir">
+<tt class="descname">ensure_dir</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#ensure_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates recursively all the parent directories of a file if they do not
+exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; the relative or absolute path of the file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="create_file">
+<tt class="descname">create_file</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#create_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>First ensures the parent the directory of the file exists, then create an
+empty file if it does not exist.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; the relative or absolute path of the file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="register_tmpfile">
+<tt class="descname">register_tmpfile</tt><big>(</big><em>filename</em><big>)</big><a class="headerlink" href="#register_tmpfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a temporary file to remove on NEOS exit. All temporary files
+created by the scenarios must be registered using this method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str</em>) &#8211; the absolute path to the file.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="sleep">
+<tt class="descname">sleep</tt><big>(</big><em>time</em><big>)</big><a class="headerlink" href="#sleep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sleep the specified amount of time unless in dry-run mode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time</strong> (<em>int or float</em>) &#8211; the time in seconds to sleep for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cmd_run_bg">
+<tt class="descname">cmd_run_bg</tt><big>(</big><em>cmd</em>, <em>shell=False</em><big>)</big><a class="headerlink" href="#cmd_run_bg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the given command in background, unless in dry-run mode. If the shell
+parameter is True, the command is run in a new spawned shell. In dry-run
+mode, the command is just printed as an information message.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmd</strong> (<em>a list of strings with the command and its parameters.</em>) &#8211; the command to run in background.</li>
+<li><strong>shell</strong> (<em>bool</em>) &#8211; whether the command is run in a new shell or not.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the handler on the process launched in background.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Popen object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cmd_wait">
+<tt class="descname">cmd_wait</tt><big>(</big><em>cmd</em>, <em>shell=False</em><big>)</big><a class="headerlink" href="#cmd_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the given command and wait for it to complete, unless in dry-run mode.
+If the shell parameter is True, the command is run in a new spawned shell.
+In dry-run mode, the command is just printed as an information message.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmd</strong> (<em>a list of strings with the command and its parameters.</em>) &#8211; the command to run in background.</li>
+<li><strong>shell</strong> (<em>bool</em>) &#8211; whether the command is run in a new shell or not.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the command exit code</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cmd_output">
+<tt class="descname">cmd_output</tt><big>(</big><em>cmd</em>, <em>shell=False</em><big>)</big><a class="headerlink" href="#cmd_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the given command, wait for it to complete and returns its output,
+unless in dry-run mode. If the shell parameter is True, the command is run
+in a new spawned shell. In dry-run mode, the command is just printed as an
+information message and the fake output <em>dryrunoutput</em> is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cmd</strong> (<em>a list of strings with the command and its parameters.</em>) &#8211; the command to run in background.</li>
+<li><strong>shell</strong> (<em>bool</em>) &#8211; whether the command is run in a new shell or not.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the output the command</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="usage.html" class="btn btn-neutral" title="Usage guide"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, CCN-HPC.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

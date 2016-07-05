@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; NEOS 0.0.6 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NEOS 0.0.6 documentation" href="index.html"/>
+        <link rel="next" title="Usage guide" href="usage.html"/>
+        <link rel="prev" title="Welcome to NEOS’s documentation!" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> NEOS</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#from-sources">From sources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debian-packages">Debian packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#synopsis">Synopsis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#description">Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#global-options">Global options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#environment-modules">Environment modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#specific-scenarios">Specific scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#integration-with-slurm">Integration with Slurm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#controlling-output">Controlling output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Scenario API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#optional-parameters">Optional parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#abstract-scenarios">Abstract scenarios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#reference-api">Reference API</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">NEOS</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/installation.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>NEOS is only supported on GNU/Linux systems. The installation must be
+performed with <tt class="docutils literal"><span class="pre">root</span></tt> user.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>NEOS software has the following dependencies:</p>
+<ul class="simple">
+<li>Python &gt;= 2.7</li>
+<li>ClusterShell</li>
+<li>pytz</li>
+<li>PySLURM &gt;= 15.08</li>
+</ul>
+</div>
+<div class="section" id="from-sources">
+<h2>From sources<a class="headerlink" href="#from-sources" title="Permalink to this headline">¶</a></h2>
+<p>First, install Python packaging system <tt class="docutils literal"><span class="pre">setuptools</span></tt> on the system. It is
+probably available through the packaging system of your distribution. For
+example, on Debian/Ubuntu:</p>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install python-setuptools
+</pre></div>
+</div>
+<p>Then, download the source of NEOS from the Git source code repository:</p>
+<div class="highlight-python"><div class="highlight"><pre>wget https://github.com/edf-hpc/neos/archive/master.tar.gz
+</pre></div>
+</div>
+<p>Then, extract the sources and run the following command to install NEOS
+with all its dependencies:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="debian-packages">
+<h2>Debian packages<a class="headerlink" href="#debian-packages" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="build">
+<h3>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h3>
+<p>Install build dependencies:</p>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install dh-python
+</pre></div>
+</div>
+<p>Then build package:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">dpkg</span><span class="o">-</span><span class="n">buildpackage</span> <span class="o">-</span><span class="n">us</span> <span class="o">-</span><span class="n">uc</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="install">
+<h3>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h3>
+<p>The Debian package can be installed manually using <cite>dpkg</cite> utility:</p>
+<div class="highlight-python"><div class="highlight"><pre>dpkg -i neos*.deb
+</pre></div>
+</div>
+<p>However, it is recommended to deploy the package in a repository (with
+<a class="reference external" href="http://mirrorer.alioth.debian.org/">reprepro</a> or similar). Then, the package can be installed with all its
+dependencies using <cite>apt</cite> command:</p>
+<div class="highlight-python"><div class="highlight"><pre>apt-get install neos
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="configuration">
+<span id="id2"></span><h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>NEOS has a unique configuration file <cite>/etc/neos/neos.conf</cite>. This format of
+this file follows the INI conventions with sections and key/value pairs. All
+parameters are optional and may be commented out.</p>
+<p>Here is the complete configuration file with all its default values:</p>
+<div class="highlight-python"><div class="highlight"><pre>[cluster]
+name = computer
+partition = cg
+wanprefix = rin
+
+[scenarios]
+dir = /var/lib/neos/scenarios
+default = xfce4
+
+[internals]
+basedir = ~/.neos
+inenv = /usr/lib/neos/exec/neos_inenv
+mcmd = /usr/bin/modulecmd
+shell = bash
+</pre></div>
+</div>
+<p>The files has 3 sections detailled in the following parts.</p>
+<div class="section" id="cluster-section">
+<h3>cluster section<a class="headerlink" href="#cluster-section" title="Permalink to this headline">¶</a></h3>
+<p>This section contains settings about the general cluster configuration:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">name</span></tt> (default: <em>computer</em>): the name of the cluster in Slurm
+configuration.</li>
+<li><tt class="docutils literal"><span class="pre">partition</span></tt> (default: <em>cg</em>): the name of the Slurm partition that is able
+to run NEOS scenarios. Running NEOS scenarios on another partition will
+produce an error.</li>
+<li><tt class="docutils literal"><span class="pre">wanprefix</span></tt> (default: <em>rin</em>): the hostname prefix of the nodes on the WAN
+network.</li>
+</ul>
+</div>
+<div class="section" id="scenarios-section">
+<h3>scenarios section<a class="headerlink" href="#scenarios-section" title="Permalink to this headline">¶</a></h3>
+<p>This sections contains global scenarios settings:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">dir</span></tt> (default: <em>/var/lib/neos/scenarios</em>): the absolute path to directory
+that contains the system-wide scenarios available to all users.</li>
+<li><tt class="docutils literal"><span class="pre">default</span></tt> (default: <em>xfce4</em>): the name of the default scenario run by NEOS.</li>
+</ul>
+</div>
+<div class="section" id="internals-section">
+<h3>internals section<a class="headerlink" href="#internals-section" title="Permalink to this headline">¶</a></h3>
+<p>This section contains NEOS internal settings. Default values may be fine for
+most users, you should not probably not modify those settings unless you really
+know what you are doing.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">basedir</span></tt> (default: <em>~/.neos</em>): the path to the directory used to store
+files created by the scenarios by default. Technically, this value replaces
+the <cite>${BASEDIR}</cite> placeholder in the optional parameters of the scenarios. All
+NEOS users must have write access to this directory.</li>
+<li><tt class="docutils literal"><span class="pre">inenv</span></tt> (default: <em>/usr/lib/neos/exec/neos_inenv</em>): the absolute path to the
+executable run by NEOS in modified environment after loading a module.</li>
+<li><tt class="docutils literal"><span class="pre">mcmd</span></tt> (default: <em>/usr/bin/modulecmd</em>): the absolute path to the executable
+that produces the list of shell commands to tune the environment providing it
+a module file.</li>
+<li><tt class="docutils literal"><span class="pre">shell</span></tt> (default: <em>bash</em>): the shell used to setup the environment when
+loading a module file.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="usage.html" class="btn btn-neutral float-right" title="Usage guide"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to NEOS’s documentation!"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, CCN-HPC.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.6',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
