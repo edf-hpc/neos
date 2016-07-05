@@ -34,4 +34,4 @@
 """This module just provides NEOS version as used by --version, setup.py and
    Sphinx documentation."""
 
-__version__ = "0.0.1"
+__version__ = "0.0.6"

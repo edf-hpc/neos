@@ -1,3 +1,10 @@
+neos (0.6.0) calibre9; urgency=medium
+
+  * New major release
+  * NEOS has been completely rewrittent from scratch
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Tue, 05 Jul 2016 10:33:28 +0200
+
 neos (0.5.0) calibre9; urgency=low
 
   * Run a window manager in Paraview and Salome scenarios to avoid
