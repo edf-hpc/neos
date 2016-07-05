@@ -5,7 +5,9 @@ Build-Depends:
  debhelper (>= 8),
  dh-python,
  python-all (>= 2.7),
- python-setuptools
+ python-setuptools,
+ python-sphinx,
+ python-sphinx-rtd-theme
 X-Python-Version: >= 2.7
 Standards-Version: 3.9.3
 Section: devel

@@ -3,7 +3,15 @@
 
 
 %:
-	dh $@ --with python2
+	dh $@ --with python2,sphinxdoc
+
+
+override_dh_auto_build:
+	dh_auto_build
+	# HTML generator
+	PYTHONPATH=. http_proxy='localhost' sphinx-build -N -b html doc/ build/html
+	# Manpage generator
+	PYTHONPATH=. http_proxy='localhost' sphinx-build -N -b man doc/ build/man
 
 clean:
 	dh $@
