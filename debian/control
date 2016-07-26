@@ -42,7 +42,17 @@ Depends:
  ${shlibs:Depends},
  ${misc:Depends},
  ${python:Depends},
- neos
+ neos,
+ xauth,
+ xvfb,
+ x11-xserver-utils,
+ x11vnc
+Recommends:
+ xfce4-session,
+ gnome-session-bin
+Suggests:
+ paraview,
+ salome
 Description: NEOS scenarios for graphical nodes
  This package provides scenarios for NEOS to use on graphical nodes of a
  cluster. This includes scenarios for VNC (with Xfce4 and Gnome window
