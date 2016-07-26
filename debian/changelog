@@ -1,3 +1,17 @@
+neos (0.6.1) calibre9; urgency=medium
+
+  * Add missing -x bits on executable scripts
+  * Move default scenarios directory from /var to /usr/lib
+  * Move graphical scenarios to dedicated pkg neos-scenarios-graphical
+  * Add contribs script to restore xorg default resolution
+  * Add new package neos-slurm-graphical-plugins to install contribs script
+    in slurm prolog
+  * Fallback to localhost IP on WAN IP addr resolving error
+  * Dynamically load scenarios package before individual module and use
+    relative import in scenarios modules.
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Tue, 26 Jul 2016 11:48:03 +0200
+
 neos (0.6.0) calibre9; urgency=medium
 
   * New major release
