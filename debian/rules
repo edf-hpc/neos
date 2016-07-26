@@ -1,10 +1,12 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+include /usr/share/dpkg/pkg-info.mk
+
+PYTHON_VERSION = $(shell pyversions -r)
 
 %:
 	dh $@ --with python2,sphinxdoc
-
 
 override_dh_auto_build:
 	dh_auto_build
@@ -12,6 +14,9 @@ override_dh_auto_build:
 	PYTHONPATH=. http_proxy='localhost' sphinx-build -N -b html doc/ build/html
 	# Manpage generator
 	PYTHONPATH=. http_proxy='localhost' sphinx-build -N -b man doc/ build/man
+
+override_dh_auto_install:
+	$(PYTHON_VERSION) setup.py install --force --root=$(CURDIR)/debian/$(DEB_SOURCE) --no-compile -O0 --install-layout=deb
 
 clean:
 	dh $@

@@ -1,0 +1,6 @@
+neos/scenarios/wm.py usr/lib/neos/scenarios
+neos/scenarios/vnc.py usr/lib/neos/scenarios
+neos/scenarios/xfce4.py usr/lib/neos/scenarios
+neos/scenarios/gnome.py usr/lib/neos/scenarios
+neos/scenarios/paraview.py usr/lib/neos/scenarios
+neos/scenarios/salome.py usr/lib/neos/scenarios

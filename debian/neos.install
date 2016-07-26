@@ -1,2 +1,3 @@
 conf/neos.conf etc/neos
 scripts/neos_inenv usr/lib/neos/exec
+neos/scenarios/__init__.py usr/lib/neos/scenarios

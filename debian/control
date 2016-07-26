@@ -35,3 +35,15 @@ Description: HPC job sessions manager framework
  .
  This package should be installed on all nodes (frontends as well as compute
  nodes).
+
+Package: neos-scenarios-graphical
+Architecture: all
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ ${python:Depends},
+ neos
+Description: NEOS scenarios for graphical nodes
+ This package provides scenarios for NEOS to use on graphical nodes of a
+ cluster. This includes scenarios for VNC (with Xfce4 and Gnome window
+ managers), Paraview and Salome sessions.
