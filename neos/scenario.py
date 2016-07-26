@@ -57,9 +57,12 @@ class Scenario(object):
         self.tmpfiles = set()
         self.password = gen_password()
         self.srcip = os.environ['SSH_CONNECTION'].split(' ')[0]
-        self.rinip = socket.gethostbyname(self.conf.wan_prefix +
-                                          socket.gethostname())
-
+        try:
+            self.rinip = socket.gethostbyname(self.conf.wan_prefix +
+                                              socket.gethostname())
+        except socket.gaierror:
+            logger.error("failed to get wan hostname, fallback to localhost")
+            self.rinip = '127.0.0.1'
         self.opts = ScenarioOpts()
         self.declare_opts()
         self.set_opts()
