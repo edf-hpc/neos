@@ -1,2 +1,2 @@
-conf/neos.conf /etc/neos
+conf/neos.conf etc/neos
 scripts/neos_inenv usr/lib/neos/exec
