@@ -207,11 +207,33 @@ class AppInEnv(object):
     def load_scenarios_dir(self, scenario_dir):
 
         logger.debug("loading scenarios in dir %s", scenario_dir)
+        self.load_scenarios_pkg(scenario_dir)
 
         scenario_files = glob.glob(os.path.join(scenario_dir, '*.py'))
 
         for scenario_file in scenario_files:
             self.load_scenario_file(scenario_file)
+
+    def load_scenarios_pkg(self, scenario_dir):
+
+        scenario_parent_dir = os.path.abspath(os.path.join(scenario_dir, '..'))
+        scenario_basedir = os.path.basename(scenario_dir)
+        try:
+            (filemod, pathname, description) = \
+                imp.find_module(scenario_basedir, [scenario_parent_dir])
+            logger.debug("find_module on package: filemod: %s pathname: %s",
+                         str(filemod), pathname)
+        except ImportError, e:
+            logger.debug("error while trying to find package: %s", str(e))
+            return
+
+        try:
+            module = imp.load_module('scenarios', None,
+                                     pathname, description)
+            logger.debug("package %s (type %s)", str(module), type(module))
+        except ImportError, e:
+            logger.debug("error while trying to import package: %s", str(e))
+            return
 
     def load_scenario_file(self, scenario_file):
 
@@ -222,7 +244,7 @@ class AppInEnv(object):
         try:
             (filemod, pathname, description) = \
                 imp.find_module(module_file, [module_dir])
-            logger.debug("find_module: filemod: %s pathname: %s",
+            logger.debug("find_module on module: filemod: %s pathname: %s",
                          str(filemod), pathname)
         except ImportError, e:
             logger.debug("error while trying to find module: %s", str(e))
