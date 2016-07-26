@@ -113,7 +113,7 @@ class ConfLoader(object):
             "partition = cg\n"
             "wanprefix = rin\n"
             "[scenarios]\n"
-            "dir = /var/lib/neos/scenarios\n"
+            "dir = /usr/lib/neos/scenarios\n"
             "default = xfce4\n"
             "[internals]\n"
             "basedir = ~/.neos\n"
