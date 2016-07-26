@@ -34,7 +34,7 @@
 import sys
 from xml.dom.minidom import Document
 
-from neos.scenarios.wm import ScenarioWM
+from scenarios.wm import ScenarioWM
 
 
 class ScenarioVnc(ScenarioWM):

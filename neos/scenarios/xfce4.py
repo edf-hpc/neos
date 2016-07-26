@@ -31,7 +31,7 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
-from neos.scenarios.vnc import ScenarioVnc
+from scenarios.vnc import ScenarioVnc
 
 
 class ScenarioXfce4(ScenarioVnc):
