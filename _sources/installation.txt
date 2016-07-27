@@ -80,7 +80,7 @@ Here is the complete configuration file with all its default values::
     wanprefix = rin
 
     [scenarios]
-    dir = /var/lib/neos/scenarios
+    dir = /usr/lib/neos/scenarios
     default = xfce4
 
     [internals]
@@ -109,7 +109,7 @@ scenarios section
 
 This sections contains global scenarios settings:
 
-* ``dir`` (default: */var/lib/neos/scenarios*): the absolute path to directory
+* ``dir`` (default: */usr/lib/neos/scenarios*): the absolute path to directory
   that contains the system-wide scenarios available to all users.
 * ``default`` (default: *xfce4*): the name of the default scenario run by NEOS.
 
