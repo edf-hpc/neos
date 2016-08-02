@@ -66,11 +66,12 @@ class ScenarioWM(Scenario):
 
         if self.display == 0:
             cmd = ['xrandr', '-d', ':0', '--fb', self.opts.resolution]
+            self.cmd_wait(cmd)
         else:
             cmd = ['Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
                    "%sx24+32" % (self.opts.resolution),
                    '-auth', self.opts.xauthfile]
-        self.cmd_run_bg(cmd)
+            self.cmd_run_bg(cmd)
 
         # start window manager
         os.environ['DISPLAY'] = ":%s" % (self.display)

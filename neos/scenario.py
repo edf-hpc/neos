@@ -142,14 +142,15 @@ class Scenario(object):
                 process = Popen(cmd, shell=shell,
                                 stdout=sys.stdout, stderr=sys.stderr)
             self.pids.add(process)
+            logger.debug("Process added to monitoring: %s", process.pid)
 
     def cmd_wait(self, cmd, shell=False):
 
         if self.conf.dryrun:
-            logger.info("run cmd: %s", ' '.join(cmd))
+            logger.info("run and wait cmd : %s", ' '.join(cmd))
             return 0
         else:
-            logger.debug("run cmd: %s", ' '.join(cmd))
+            logger.debug("run and wait cmd: %s", ' '.join(cmd))
             if self.conf.log:
                 return call(cmd, shell=shell,
                             stdout=self.logfile, stderr=self.logfile)
