@@ -56,7 +56,12 @@ class Scenario(object):
         self.pids = set()  # bg processes
         self.tmpfiles = set()
         self.password = gen_password()
-        self.srcip = os.environ['SSH_CONNECTION'].split(' ')[0]
+        if 'SSH_CONNECTION' in os.environ:
+            self.srcip = os.environ['SSH_CONNECTION'].split(' ')[0]
+        else:
+            logger.warning("unable to extract source IP from SSH_CONNECTION, "
+                           "fallback to 127.0.0.1")
+            self.srcip = '127.0.0.1'
         try:
             self.rinip = socket.gethostbyname(self.conf.wan_prefix +
                                               socket.gethostname())
@@ -93,7 +98,7 @@ class Scenario(object):
             self.declare_opts_cls(xcls)
 
     def set_opts(self):
-
+        """Set scenario opts with values given by user in parameters."""
         if self.conf.opts is not None:
             for opt_s in self.conf.opts:
                 self.opts.set(opt_s)
