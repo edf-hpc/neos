@@ -70,7 +70,6 @@ class Scenario(object):
             self.rinip = '127.0.0.1'
         self.opts = ScenarioOpts()
         self.declare_opts()
-        self.set_opts()
 
         if self.conf.log:
             self.ensure_dir(self.opts.logfile)
