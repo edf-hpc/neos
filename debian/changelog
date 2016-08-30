@@ -1,3 +1,10 @@
+neos (0.6.3) calibre9; urgency=medium
+
+  * Fallback to localhost if SSH_CONNECTION not set
+  * Fix error handling if unknown opt in params
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Tue, 30 Aug 2016 10:22:12 +0200
+
 neos (0.6.2) calibre9; urgency=medium
 
   * Do not run xrandr in background (Fixes #6) 
