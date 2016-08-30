@@ -1,3 +1,9 @@
+neos (0.6.4) calibre9; urgency=medium
+
+  * Disable opts param evaluation at scenario load
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Tue, 30 Aug 2016 11:51:15 +0200
+
 neos (0.6.3) calibre9; urgency=medium
 
   * Fallback to localhost if SSH_CONNECTION not set
