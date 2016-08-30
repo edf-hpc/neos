@@ -325,6 +325,7 @@ class AppInEnv(object):
         if usable_scenario is None:
             return 1
         scenario = usable_scenario.instance
+        scenario.set_opts()
         result = scenario.run()
         scenario.wait()
         scenario.cleanup()

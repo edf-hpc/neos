@@ -59,7 +59,9 @@ class ScenarioOpts(object):
 
     def set(self, opt_s):
         (opt, value) = self.parse_user_opt(opt_s)
-        self._opts[opt].value = value
+        if opt is not None and value is not None:
+            logger.debug("setting opt %s with value %s", opt, str(value))
+            self._opts[opt].value = value
 
     def __iter__(self):
 
@@ -136,8 +138,9 @@ class ScenarioOpts(object):
 
         try:
             opt_type = self._opts[opt_name].p_type
-        except IndexError, e:
+        except KeyError, e:
             logger.error("unknown opt %s: %s", opt_name, e)
+            return (None, None)
 
         try:
             opt_val = ScenarioOpts._parse_value(opt_type, opt_val_s)
