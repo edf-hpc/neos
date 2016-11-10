@@ -1,3 +1,9 @@
+neos (0.6.6) calibre9; urgency=medium
+
+  * Fix bug with self.gpu CUDA_VISIBLE_DEVICES
+
+ -- Camille Mange <camille-externe.mange@edf.fr>  Thu, 10 Nov 2016 17:54:15 +0200
+
 neos (0.6.5) calibre9; urgency=medium
 
   * Support SLURM GRES
