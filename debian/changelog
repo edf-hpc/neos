@@ -1,3 +1,9 @@
+neos (0.6.5) calibre9; urgency=medium
+
+  * Support SLURM GRES
+
+ -- Camille Mange <camille-externe.mange@edf.fr>  Thu, 10 Nov 2016 15:21:15 +0200
+
 neos (0.6.4) calibre9; urgency=medium
 
   * Disable opts param evaluation at scenario load
