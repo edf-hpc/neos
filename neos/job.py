@@ -70,6 +70,8 @@ class SlurmJob(object):
             self.procid = int(os.environ.get('SLURM_PROCID'))
             self.nodes = NodeSet(os.environ.get('SLURM_NODELIST'))
             self.partition = os.environ.get('SLURM_JOB_PARTITION')
+            if 'CUDA_VISIBLE_DEVICE' in os.environ:
+                self.gpu = int(os.environ.get('CUDA_VISIBLE_DEVICE'))
         else:
             logger.debug("running out of slurm job environment, "
                          "skipping job attributes filling")
@@ -88,8 +90,10 @@ class SlurmJob(object):
         return not self.known
 
     def rpc(self):
-        job = pyslurm.job().find_id(self.jobid)
-        self.shared = job['shared'] != 0
+        job_list = pyslurm.job().find_id(str(self.jobid))
+        job = job_list[0]
+        self.gres = job['gres']
+        self.shared = job['shared'] != '0'
         self.end = datetime.fromtimestamp(job['end_time'], localtz())
 
     @property
@@ -108,6 +112,7 @@ class SlurmJob(object):
                      'procid',
                      'nodes',
                      'partition',
+                     'gpu',
                      'shared',
                      'end']:
             logger.debug(">> %s: %s", attr, str(getattr(self, attr)))

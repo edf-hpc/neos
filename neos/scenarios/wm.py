@@ -50,6 +50,8 @@ class ScenarioWM(Scenario):
     def display(self):
         if not self.job.shared:
             return 0
+        if self.job.gres:
+            return int(self.job.gpu)
         return self.job.jobid % ScenarioWM.MAGIC_NUMBER + 1
 
     def _run_wm(self, wm):
@@ -64,8 +66,8 @@ class ScenarioWM(Scenario):
                ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie]
         self.cmd_wait(cmd)
 
-        if self.display == 0:
-            cmd = ['xrandr', '-d', ':0', '--fb', self.opts.resolution]
+        if (self.display == 0 or self.display == 1):
+            cmd = ['xrandr', '-d', ":%d" % (self.display), '--fb', self.opts.resolution]
             self.cmd_wait(cmd)
         else:
             cmd = ['Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
