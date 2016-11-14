@@ -70,7 +70,7 @@ class SlurmJob(object):
             self.procid = int(os.environ.get('SLURM_PROCID'))
             self.nodes = NodeSet(os.environ.get('SLURM_NODELIST'))
             self.partition = os.environ.get('SLURM_JOB_PARTITION')
-            self.gpu = int(os.environ.get('CUDA_VISIBLE_DEVICES'))
+            self.gpu = os.environ.get('CUDA_VISIBLE_DEVICES')
         else:
             logger.debug("running out of slurm job environment, "
                          "skipping job attributes filling")
