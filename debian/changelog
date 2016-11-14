@@ -1,3 +1,9 @@
+neos (0.6.7) calibre9; urgency=medium
+
+  * Fix bug Jobs in shared mode doesn't work because of a bad declaration of self.gpu (int)
+
+ -- Camille Mange <camille-externe.mange@edf.fr>  Mon, 14 Nov 2016 10:59:15 +0200
+
 neos (0.6.6) calibre9; urgency=medium
 
   * Fix bug with self.gpu CUDA_VISIBLE_DEVICES
