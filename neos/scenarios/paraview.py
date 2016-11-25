@@ -31,6 +31,8 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
+import sys
+
 from scenarios.wm import ScenarioWM
 
 
@@ -50,6 +52,10 @@ class ScenarioParaview(ScenarioWM):
         wm_fail = self._run_wm(self.opts.wm)
         if wm_fail:
             return wm_fail
+
+        # print the first node WAN IP address
+        print("ip: %s" % (self.rinip))
+        sys.stdout.flush()  # force flush to avoid buffering
 
         if self.job.shared:
             vglrun = ['vglrun', '-display', ':0']
