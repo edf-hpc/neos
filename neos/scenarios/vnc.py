@@ -43,7 +43,8 @@ class ScenarioVnc(ScenarioWM):
 
     OPTS = ['vauthfile:str:${BASEDIR}/vncpass_${JOBID}',
             'vncpasswd:str:x11vnc',
-            'vnc:str:x11vnc']
+            'vnc:str:x11vnc',
+            'skipvncoutput:bool:true']
 
     def __init__(self):
 
@@ -116,10 +117,15 @@ class ScenarioVnc(ScenarioWM):
         if wm_fail:
             return wm_fail
 
+        if self.opts.skipvncoutput is True:
+            stdout = stderr = '/dev/null'
+        else:
+            stdout = stderr = None
+
         # store VNC password in vauthfile
         cmd = [self.opts.vncpasswd, '-storepasswd', self.password,
                self.opts.vauthfile]
-        self.cmd_wait(cmd)
+        self.cmd_wait(cmd, stderr=stderr)
         self.register_tmpfile(self.opts.vauthfile)
 
         # start VNC server
@@ -130,6 +136,6 @@ class ScenarioVnc(ScenarioWM):
                '-rfbwait', '30000', '-localhost',
                '-rfbauth', self.opts.vauthfile,
                '-oa', self.opts.logfile, '-noxdamage']
-        self.cmd_run_bg(cmd)
+        self.cmd_run_bg(cmd, stdout=stdout)
 
         return 0

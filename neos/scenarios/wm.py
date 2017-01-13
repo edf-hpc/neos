@@ -40,7 +40,8 @@ class ScenarioWM(Scenario):
     MAGIC_NUMBER = 59530
 
     OPTS = ['xauthfile:str:${BASEDIR}/Xauthority_${JOBID}',
-            'resolution:str:1024x768']
+            'resolution:str:1024x768',
+            'skipwmerr:bool:true']
 
     def __init__(self):
 
@@ -66,6 +67,11 @@ class ScenarioWM(Scenario):
                ":%d" % (self.display), 'MIT-MAGIC-COOKIE-1', cookie]
         self.cmd_wait(cmd)
 
+        if self.opts.skipwmerr is True:
+            stderr = '/dev/null'
+        else:
+            stderr = None
+
         if (self.display == 0 or self.display == 1):
             cmd = ['xrandr', '-d', ":%d" % (self.display), '--fb', self.opts.resolution]
             self.cmd_wait(cmd)
@@ -73,13 +79,14 @@ class ScenarioWM(Scenario):
             cmd = ['Xvfb', ":%d" % (self.display), '-once', '-screen', '0',
                    "%sx24+32" % (self.opts.resolution),
                    '-auth', self.opts.xauthfile]
-            self.cmd_run_bg(cmd)
+            self.cmd_run_bg(cmd, stderr=stderr)
 
         # start window manager
         os.environ['DISPLAY'] = ":%s" % (self.display)
         os.environ['XAUTHORITY'] = self.opts.xauthfile
+
         cmd = ['dbus-launch', '--exit-with-session', wm]
-        self.cmd_run_bg(cmd)
+        self.cmd_run_bg(cmd, stderr=stderr)
 
         self.sleep(1)
 
