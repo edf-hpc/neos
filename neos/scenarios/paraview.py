@@ -41,7 +41,7 @@ class ScenarioParaview(ScenarioWM):
     NAME = 'paraview'
     OPTS = ['wm:str:xfce4-session',
             'resolution:str:4096x4096',
-            'paraviewpath:str:/opt/paraview/3.14']
+            'paraviewpath:str:/usr']
 
     def __init__(self):
 
