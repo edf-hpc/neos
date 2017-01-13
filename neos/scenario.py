@@ -43,6 +43,7 @@ from neos.utils import gen_password, FakePopen
 from neos.opts import ScenarioOpts
 from neos.conf import Conf
 from neos.job import Job
+from neos.log import LogFileSet
 
 
 class Scenario(object):
@@ -55,6 +56,7 @@ class Scenario(object):
         self.job = Job()
         self.pids = set()  # bg processes
         self.tmpfiles = set()
+        self.user_logfiles = LogFileSet()
         self.password = gen_password()
         if 'SSH_CONNECTION' in os.environ:
             self.srcip = os.environ['SSH_CONNECTION'].split(' ')[0]
@@ -77,6 +79,7 @@ class Scenario(object):
             self.logfile = open(self.opts.logfile, 'w+')
         else:
             self.logfile = None
+
 
     def declare_opts(self):
 
@@ -132,35 +135,79 @@ class Scenario(object):
             logger.debug("register tmp file %s", filename)
             self.tmpfiles.add(filename)
 
-    def cmd_run_bg(self, cmd, shell=False):
+
+    def _check_open_logfile(self, path):
+        """Check path type (must be string), search for path in logfiles set,
+           and try opening fd. Returns the fd if everything goes well, None on
+           error."""
+
+        if type(path) is not str:
+            logger.warning("logfile path type is invalid, cannot "
+                           "use it")
+            return None
+
+        # search for path into user_logfiles
+        if path in self.user_logfiles:
+            logfile = self.user_logfiles.get(path)
+        else:
+            logfile = self.user_logfiles.add(path)
+
+        fd = logfile.open()  # returns None on error
+        return fd
+
+    def _output_streams(self, stdout, stderr):
+        """Returns the files handlers for the stdout and stderr of the command
+           based on user input and --log argument. By default, the neos
+           stdout/stderr are selected, or --log file if set. Then, if the user
+           has given either a stdout and a stderr for the command, check and
+           open them before using them."""
+
+        # use neos stdout/stderr by default or --log file if set
+        if self.conf.log:
+            p_stdout = self.logfile
+            p_stderr = self.logfile
+        else:
+            p_stdout = sys.stdout
+            p_stderr = sys.stderr
+
+        # if the user either give a stdout or a stderr
+        if stdout is not None or stderr is not None:
+
+            if stdout is not None:
+
+                fd = self._check_open_logfile(stdout)
+                if fd is not None:
+                    p_stdout = fd
+
+            if stderr is not None:
+
+                fd = self._check_open_logfile(stderr)
+                if fd is not None:
+                    p_stderr = fd
+
+        return (p_stdout, p_stderr)
+
+    def cmd_run_bg(self, cmd, shell=False, stdout=None, stderr=None):
 
         if self.conf.dryrun:
             logger.info("run cmd: %s", ' '.join(cmd))
             return FakePopen()
         else:
             logger.debug("run cmd: %s", ' '.join(cmd))
-            if self.conf.log:
-                process = Popen(cmd, shell=shell,
-                                stdout=self.logfile, stderr=self.logfile)
-            else:
-                process = Popen(cmd, shell=shell,
-                                stdout=sys.stdout, stderr=sys.stderr)
+            (p_stdout, p_stderr) = self._output_streams(stdout, stderr)
+            process = Popen(cmd, shell=shell, stdout=p_stdout, stderr=p_stderr)
             self.pids.add(process)
             logger.debug("Process added to monitoring: %s", process.pid)
 
-    def cmd_wait(self, cmd, shell=False):
+    def cmd_wait(self, cmd, shell=False, stdout=None, stderr=None):
 
         if self.conf.dryrun:
             logger.info("run and wait cmd : %s", ' '.join(cmd))
             return 0
         else:
             logger.debug("run and wait cmd: %s", ' '.join(cmd))
-            if self.conf.log:
-                return call(cmd, shell=shell,
-                            stdout=self.logfile, stderr=self.logfile)
-            else:
-                return call(cmd, shell=shell,
-                            stdout=sys.stdout, stderr=sys.stderr)
+            (p_stdout, p_stderr) = self._output_streams(stdout, stderr)
+            return call(cmd, shell=shell, stdout=p_stdout, stderr=p_stderr)
 
     def cmd_output(self, cmd, shell=False):
 
@@ -207,6 +254,8 @@ class Scenario(object):
         if self.logfile is not None:
             logger.debug("closing logfile descriptor")
             self.logfile.close()
+        for user_logfile in self.user_logfiles:
+            user_logfile.close()
         if not self.conf.keep:
             for filename in self.tmpfiles:
                 if os.path.exists(filename):

@@ -83,6 +83,46 @@ used. Other values can be set with ``-o, --opts`` parameter::
 
 NEOS framework make sure parameters types are respected.
 
+Command level logfiles
+======================
+
+Additionally to ``-l,--log`` argument which redirect the outputs of all
+sub-commands of a scenario, NEOS also supports fine-grain redirections of the
+stdout and stderr outputs to arbitrary files at command level. This is
+controlled with optional ``stdout`` and ``stderr`` arguments of ``cmd_run_bg()``
+and ``cmd_wait()`` scenarios methods. Here is a commented example::
+
+    #!/usr/bin/env python
+    
+    from neos import Scenario
+    
+    class ScenarioOutputs(Scenario):
+    
+        NAME = 'outputs'
+    
+        def run(self):
+    
+            # bar1 printed to neos stdout or --log file if set
+            self.cmd_wait(['echo', 'bar1'])
+    
+            # bar2 printed in foo2 file
+            self.cmd_wait(['echo', 'bar2'], stdout='foo2')
+    
+            # bar3 redirected to /dev/null, foo3 created but empty
+            self.cmd_wait(['echo', 'bar3'], stdout='/dev/null', stderr='foo3')
+    
+            # error printed on stderr by cat redirected to /dev/null
+            self.cmd_wait(['cat', '/root/fail'], stderr='/dev/null')
+    
+            # neos cannot open /root/fail (permission denied), bar4 is printed to
+            # neos stdout or --log file is set.
+            self.cmd_wait(['echo', 'bar4'], stdout='/root/fail')
+    
+            return 0
+
+NEOS automatically takes care of opening and closing all files descriptors as
+needed.
+
 Abstract scenarios
 ==================
 
@@ -199,27 +239,41 @@ Here are the available public methods of the base Scenario class:
    :type time: int or float
    :return: None
 
-.. py:method:: cmd_run_bg(cmd, shell=False)
+.. py:method:: cmd_run_bg(cmd, shell=False, stdout=None, stderr=None)
 
-   Run the given command in background, unless in dry-run mode. If the shell
-   parameter is True, the command is run in a new spawned shell. In dry-run
-   mode, the command is just printed as an information message.
+   Run the given command in background, unless in dry-run mode. In dry-run mode,
+   the command is just printed as an information message. If the shell parameter
+   is True, the command is run in a new spawned shell. If stdout and stderr are
+   valid file paths and can be opened, respectively stdout and stderr outputs of
+   the command are redirected to these files. If not set or an error is
+   encountered while opening the files, the outputs of the command will be
+   either connected to neos stdout/stderr or redirected to the logfile if
+   ``-l,--log`` parameter is set.
 
    :param cmd: the command to run in background.
    :type cmd: a list of strings with the command and its parameters.
    :param bool shell: whether the command is run in a new shell or not.
+   :param str stdout: file path where to redirect stdout of the command.
+   :param str stderr: file path where to redirect stderr of the command.
    :return: the handler on the process launched in background.
    :rtype: Popen object
 
-.. py:method:: cmd_wait(cmd, shell=False)
+.. py:method:: cmd_wait(cmd, shell=False, stdout=None, stderr=None)
 
-   Run the given command and wait for it to complete, unless in dry-run mode.
-   If the shell parameter is True, the command is run in a new spawned shell.
-   In dry-run mode, the command is just printed as an information message.
+   Run the given command and wait for it to complete, unless in dry-run mode. In
+   dry-run mode, the command is just printed as an information message. If the
+   shell parameter is True, the command is run in a new spawned shell. If stdout
+   and stderr are valid file paths and can be opened, respectively stdout and
+   stderr outputs of the command are redirected to these files. If not set or an
+   error is encountered while opening the files, the outputs of the command will
+   be either connected to neos stdout/stderr or redirected to the logfile if
+   ``-l,--log`` parameter is set.
 
    :param cmd: the command to run in background.
    :type cmd: a list of strings with the command and its parameters.
    :param bool shell: whether the command is run in a new shell or not.
+   :param str stdout: file path where to redirect stdout of the command.
+   :param str stderr: file path where to redirect stderr of the command.
    :return: the command exit code
    :rtype: int
 
