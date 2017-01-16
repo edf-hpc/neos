@@ -1,3 +1,12 @@
+neos (0.6.9) calibre9; urgency=medium
+
+  * Look by default for paraview path in /usr
+  * Add support for bool opts type
+  * Add possibility to control outputs at cmd level
+  * Remove wm/vnc scenarios output by default
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Mon, 16 Jan 2017 12:17:02 +0100
+
 neos (0.6.8) calibre9; urgency=medium
 
   * Print WAN IP addr of 1st node in paraview scenario
