@@ -111,7 +111,7 @@ class ScenarioOpts(object):
 
         if opt_type_s == 'str':
             opt_type = str
-        elif opt_type_s == 'boolean':
+        elif opt_type_s in ['boolean', 'bool']:
             opt_type = bool
         elif opt_type_s == 'int':
             opt_type = int
