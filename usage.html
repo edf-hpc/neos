@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Usage guide &mdash; NEOS 0.6.1 documentation</title>
+  <title>Usage guide &mdash; NEOS 0.6.9 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
   
 
   
-    <link rel="top" title="NEOS 0.6.1 documentation" href="index.html"/>
+    <link rel="top" title="NEOS 0.6.9 documentation" href="index.html"/>
         <link rel="next" title="Scenario API" href="api.html"/>
         <link rel="prev" title="Installation" href="installation.html"/> 
 
@@ -79,6 +79,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">Scenario API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.html#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#optional-parameters">Optional parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#command-level-logfiles">Command level logfiles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#abstract-scenarios">Abstract scenarios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#reference-api">Reference API</a></li>
 </ul>
@@ -287,7 +288,8 @@ a NEOS scenario:</p>
 <li>NEOS internal output, including information, warning, errors reported by the
 software itself, as well as debug messages when <cite>-d, &#8211;debug</cite> flag is enabled
 on the command line.</li>
-<li>outputs of sub-commands launched by scenarios.</li>
+<li>outputs of sub-commands launched by scenarios (except when explicitely
+controlled by the scenarios).</li>
 </ul>
 <p>By default, all these outputs are mixed within stdout and stderr of NEOS
 process. The sub-commands outputs can be redirected in a logfile using the
@@ -400,7 +402,7 @@ produced internally by NEOS,</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.6.1',
+            VERSION:'0.6.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

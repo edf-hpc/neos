@@ -155,7 +155,8 @@ NEOS produces 2 types of outputs:
 - NEOS internal output, including information, warning, errors reported by the
   software itself, as well as debug messages when `-d, --debug` flag is enabled
   on the command line.
-- outputs of sub-commands launched by scenarios.
+- outputs of sub-commands launched by scenarios (except when explicitely
+  controlled by the scenarios).
 
 By default, all these outputs are mixed within stdout and stderr of NEOS
 process. The sub-commands outputs can be redirected in a logfile using the

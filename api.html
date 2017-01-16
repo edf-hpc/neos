@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Scenario API &mdash; NEOS 0.6.1 documentation</title>
+  <title>Scenario API &mdash; NEOS 0.6.9 documentation</title>
   
 
   
@@ -28,7 +28,7 @@
   
 
   
-    <link rel="top" title="NEOS 0.6.1 documentation" href="index.html"/>
+    <link rel="top" title="NEOS 0.6.9 documentation" href="index.html"/>
         <link rel="prev" title="Usage guide" href="usage.html"/> 
 
   
@@ -78,6 +78,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="">Scenario API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-parameters">Optional parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-level-logfiles">Command level logfiles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#abstract-scenarios">Abstract scenarios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#reference-api">Reference API</a></li>
 </ul>
@@ -194,6 +195,45 @@ used. Other values can be set with <tt class="docutils literal"><span class="pre
 </pre></div>
 </div>
 <p>NEOS framework make sure parameters types are respected.</p>
+</div>
+<div class="section" id="command-level-logfiles">
+<h2>Command level logfiles<a class="headerlink" href="#command-level-logfiles" title="Permalink to this headline">¶</a></h2>
+<p>Additionally to <tt class="docutils literal"><span class="pre">-l,--log</span></tt> argument which redirect the outputs of all
+sub-commands of a scenario, NEOS also supports fine-grain redirections of the
+stdout and stderr outputs to arbitrary files at command level. This is
+controlled with optional <tt class="docutils literal"><span class="pre">stdout</span></tt> and <tt class="docutils literal"><span class="pre">stderr</span></tt> arguments of <tt class="docutils literal"><span class="pre">cmd_run_bg()</span></tt>
+and <tt class="docutils literal"><span class="pre">cmd_wait()</span></tt> scenarios methods. Here is a commented example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">neos</span> <span class="kn">import</span> <span class="n">Scenario</span>
+
+<span class="k">class</span> <span class="nc">ScenarioOutputs</span><span class="p">(</span><span class="n">Scenario</span><span class="p">):</span>
+
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s">&#39;outputs&#39;</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c"># bar1 printed to neos stdout or --log file if set</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_wait</span><span class="p">([</span><span class="s">&#39;echo&#39;</span><span class="p">,</span> <span class="s">&#39;bar1&#39;</span><span class="p">])</span>
+
+        <span class="c"># bar2 printed in foo2 file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_wait</span><span class="p">([</span><span class="s">&#39;echo&#39;</span><span class="p">,</span> <span class="s">&#39;bar2&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="s">&#39;foo2&#39;</span><span class="p">)</span>
+
+        <span class="c"># bar3 redirected to /dev/null, foo3 created but empty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_wait</span><span class="p">([</span><span class="s">&#39;echo&#39;</span><span class="p">,</span> <span class="s">&#39;bar3&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="s">&#39;/dev/null&#39;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="s">&#39;foo3&#39;</span><span class="p">)</span>
+
+        <span class="c"># error printed on stderr by cat redirected to /dev/null</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_wait</span><span class="p">([</span><span class="s">&#39;cat&#39;</span><span class="p">,</span> <span class="s">&#39;/root/fail&#39;</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="s">&#39;/dev/null&#39;</span><span class="p">)</span>
+
+        <span class="c"># neos cannot open /root/fail (permission denied), bar4 is printed to</span>
+        <span class="c"># neos stdout or --log file is set.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_wait</span><span class="p">([</span><span class="s">&#39;echo&#39;</span><span class="p">,</span> <span class="s">&#39;bar4&#39;</span><span class="p">],</span> <span class="n">stdout</span><span class="o">=</span><span class="s">&#39;/root/fail&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>NEOS automatically takes care of opening and closing all files descriptors as
+needed.</p>
 </div>
 <div class="section" id="abstract-scenarios">
 <h2>Abstract scenarios<a class="headerlink" href="#abstract-scenarios" title="Permalink to this headline">¶</a></h2>
@@ -341,10 +381,15 @@ created by the scenarios must be registered using this method.</p>
 
 <dl class="method">
 <dt id="cmd_run_bg">
-<tt class="descname">cmd_run_bg</tt><big>(</big><em>cmd</em>, <em>shell=False</em><big>)</big><a class="headerlink" href="#cmd_run_bg" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the given command in background, unless in dry-run mode. If the shell
-parameter is True, the command is run in a new spawned shell. In dry-run
-mode, the command is just printed as an information message.</p>
+<tt class="descname">cmd_run_bg</tt><big>(</big><em>cmd</em>, <em>shell=False</em>, <em>stdout=None</em>, <em>stderr=None</em><big>)</big><a class="headerlink" href="#cmd_run_bg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the given command in background, unless in dry-run mode. In dry-run mode,
+the command is just printed as an information message. If the shell parameter
+is True, the command is run in a new spawned shell. If stdout and stderr are
+valid file paths and can be opened, respectively stdout and stderr outputs of
+the command are redirected to these files. If not set or an error is
+encountered while opening the files, the outputs of the command will be
+either connected to neos stdout/stderr or redirected to the logfile if
+<tt class="docutils literal"><span class="pre">-l,--log</span></tt> parameter is set.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -352,6 +397,8 @@ mode, the command is just printed as an information message.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>cmd</strong> (<em>a list of strings with the command and its parameters.</em>) &#8211; the command to run in background.</li>
 <li><strong>shell</strong> (<em>bool</em>) &#8211; whether the command is run in a new shell or not.</li>
+<li><strong>stdout</strong> (<em>str</em>) &#8211; file path where to redirect stdout of the command.</li>
+<li><strong>stderr</strong> (<em>str</em>) &#8211; file path where to redirect stderr of the command.</li>
 </ul>
 </td>
 </tr>
@@ -367,10 +414,15 @@ mode, the command is just printed as an information message.</p>
 
 <dl class="method">
 <dt id="cmd_wait">
-<tt class="descname">cmd_wait</tt><big>(</big><em>cmd</em>, <em>shell=False</em><big>)</big><a class="headerlink" href="#cmd_wait" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the given command and wait for it to complete, unless in dry-run mode.
-If the shell parameter is True, the command is run in a new spawned shell.
-In dry-run mode, the command is just printed as an information message.</p>
+<tt class="descname">cmd_wait</tt><big>(</big><em>cmd</em>, <em>shell=False</em>, <em>stdout=None</em>, <em>stderr=None</em><big>)</big><a class="headerlink" href="#cmd_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the given command and wait for it to complete, unless in dry-run mode. In
+dry-run mode, the command is just printed as an information message. If the
+shell parameter is True, the command is run in a new spawned shell. If stdout
+and stderr are valid file paths and can be opened, respectively stdout and
+stderr outputs of the command are redirected to these files. If not set or an
+error is encountered while opening the files, the outputs of the command will
+be either connected to neos stdout/stderr or redirected to the logfile if
+<tt class="docutils literal"><span class="pre">-l,--log</span></tt> parameter is set.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -378,6 +430,8 @@ In dry-run mode, the command is just printed as an information message.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>cmd</strong> (<em>a list of strings with the command and its parameters.</em>) &#8211; the command to run in background.</li>
 <li><strong>shell</strong> (<em>bool</em>) &#8211; whether the command is run in a new shell or not.</li>
+<li><strong>stdout</strong> (<em>str</em>) &#8211; file path where to redirect stdout of the command.</li>
+<li><strong>stderr</strong> (<em>str</em>) &#8211; file path where to redirect stderr of the command.</li>
 </ul>
 </td>
 </tr>
@@ -457,7 +511,7 @@ information message and the fake output <em>dryrunoutput</em> is returned.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.6.1',
+            VERSION:'0.6.9',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
