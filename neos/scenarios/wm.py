@@ -85,7 +85,10 @@ class ScenarioWM(Scenario):
         os.environ['DISPLAY'] = ":%s" % (self.display)
         os.environ['XAUTHORITY'] = self.opts.xauthfile
 
-        cmd = ['dbus-launch', '--exit-with-session', wm]
+        # Launch the window manager once on every nodes of the job, as this is
+        # a requirement for distributed rendering solutions such as paraview.
+        cmd = ['srun', '--tasks-per-node=1',
+               'dbus-launch', '--exit-with-session', wm]
         self.cmd_run_bg(cmd, stderr=stderr)
 
         self.sleep(1)
