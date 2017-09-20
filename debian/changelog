@@ -1,3 +1,9 @@
+neos (0.6.10) calibre9; urgency=medium
+
+  * Launch WM once on every nodes
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Wed, 20 Sep 2017 15:47:51 +0200
+
 neos (0.6.9) calibre9; urgency=medium
 
   * Look by default for paraview path in /usr
