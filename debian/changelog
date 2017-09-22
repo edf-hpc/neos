@@ -1,3 +1,9 @@
+neos (0.6.11) calibre9; urgency=medium
+
+  * Fake version to bump forgotten --version
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Fri, 22 Sep 2017 14:23:56 +0200
+
 neos (0.6.10) calibre9; urgency=medium
 
   * Launch WM once on every nodes
