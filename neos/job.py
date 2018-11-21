@@ -91,7 +91,9 @@ class SlurmJob(object):
     def rpc(self):
         job_list = pyslurm.job().find_id(str(self.jobid))
         job = job_list[0]
-        self.gres = job['gres']
+        self.gres = None
+        if 'gres' in job.keys():
+            self.gres = job['gres']
         self.shared = job['shared'] != '0'
         self.end = datetime.fromtimestamp(job['end_time'], localtz())
 
