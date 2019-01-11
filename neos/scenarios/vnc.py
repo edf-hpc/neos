@@ -88,9 +88,11 @@ class ScenarioVnc(ScenarioWM):
         config_elmt = doc.createElement('node')
         config_elmt.appendChild(doc.createTextNode(self.job.firstnode))
         config.appendChild(config_elmt)
+
         config_elmt = doc.createElement('ipaddress')
         config_elmt.appendChild(doc.createTextNode(self.rinip))
         config.appendChild(config_elmt)
+
         config_elmt = doc.createElement('fqdn')
         try:
             # try to find a string representing the canonical name of the firstnode
@@ -99,9 +101,11 @@ class ScenarioVnc(ScenarioWM):
             fqdn = self.job.firstnode
         config_elmt.appendChild(doc.createTextNode(fqdn))
         config.appendChild(config_elmt)
+
         config_elmt = doc.createElement('session')
         config_elmt.appendChild(doc.createTextNode(str(self.rfbport)))
         config.appendChild(config_elmt)
+
         config_elmt = doc.createElement('password')
         config_elmt.appendChild(doc.createTextNode(self.password))
         config.appendChild(config_elmt)
