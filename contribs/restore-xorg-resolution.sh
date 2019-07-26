@@ -8,4 +8,14 @@
 # This script is run as root by slurmd daemon on first job or job step
 # initiation on that node.
 
-xrandr -d :0 --fb 1024x768
+# Restart Xorg servers to renew graphical sessions if no other job exists 
+
+if [ -z "$(find "/sys/fs/cgroup/cpuset" -name "job_*" -type d)" ]; then
+       logger "Restarting Xorg@0 ans Xorg@1 servers"       
+       systemctl restart xorg@0.service 2>/dev/null
+       systemctl restart xorg@1.service 2>/dev/null
+fi
+
+logger "Restoring Xorg default resolution for display :0 :1"
+xrandr -d :0 --fb 1024x768 2>/dev/null
+xrandr -d :1 --fb 1024x768 2>/dev/null
