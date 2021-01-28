@@ -119,7 +119,7 @@ class ScenarioVnc(ScenarioWM):
         pid.appendChild(doc.createTextNode(str(self.job.jobid)))
         root.appendChild(pid)
 
-        print doc.toprettyxml()
+        print(doc.toprettyxml())
         sys.stdout.flush()  # force flush to avoid buffering
 
     def _run_vnc(self, wm):

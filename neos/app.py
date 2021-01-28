@@ -289,9 +289,9 @@ class AppInEnv(object):
         """Print on stdout the list of usable scenarios with their optional
            parameters."""
         for scenario in self.scenarios:
-            print "- %s (%s)" % (scenario.name, scenario.modname)
+            print("- %s (%s)" % (scenario.name, scenario.modname))
             for opt in scenario.instance.opts:
-                print "    - %-15s (%s): %s" % opt
+                print("    - %-15s (%s): %s" % opt)
 
     def dump_env(self):
 
