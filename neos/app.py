@@ -278,7 +278,7 @@ class AppInEnv(object):
 
     def find_scenario(self, name):
 
-        scenario = filter(lambda x: x.name == name, self.scenarios)
+        scenario = [x for x in self.scenarios if x.name == name]
         if not len(scenario):
             logger.error("unable to find scenario %s in loaded scenarios",
                          name)
