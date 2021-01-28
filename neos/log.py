@@ -87,7 +87,7 @@ class LogFile(object):
             logger.debug("opening logfile %s", self.path)
             try:
                 self.fd = open(self.path, 'a+')
-            except IOError, err:
+            except IOError as err:
                 logger.error("unable to open logfile %s: %s", self.path, err)
                 return None
         return self.fd
