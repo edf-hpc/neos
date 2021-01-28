@@ -245,7 +245,7 @@ class Scenario(object):
                         return
                     else:
                         sleep(0.5)
-        except KeyboardInterrupt, e:
+        except KeyboardInterrupt:
             logger.info("SIGINT received, killing all processes")
             self.kill(None)
 
