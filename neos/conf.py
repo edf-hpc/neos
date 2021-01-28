@@ -33,8 +33,13 @@
 
 import logging
 logger = logging.getLogger(__name__)
-import ConfigParser
-from StringIO import StringIO
+import sys
+if sys.version_info[0] > 2:
+    import configparser
+    from io import StringIO
+else:
+    import ConfigParser as configparser
+    from StringIO import StringIO
 import os
 
 from neos.version import __version__
@@ -121,7 +126,7 @@ class ConfLoader(object):
             "mcmd = /usr/bin/modulecmd\n"
             "shell = bash\n")
 
-        self.cf = ConfigParser.RawConfigParser()
+        self.cf = configparser.RawConfigParser()
         self.cf.readfp(defaults)
         self.cf.read(path)
 
