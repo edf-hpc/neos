@@ -296,7 +296,7 @@ class AppInEnv(object):
     def dump_env(self):
 
         logger.debug('environment:')
-        for key, value in os.environ.iteritems():
+        for key, value in os.environ.items():
             logger.debug(">> %s: %s", key, value)
 
     def run(self):
