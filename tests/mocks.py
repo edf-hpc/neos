@@ -31,7 +31,11 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
-from ConfigParser import NoSectionError, NoOptionError
+import sys
+if sys.version_info[0] > 2:
+    from configparser import NoSectionError, NoOptionError
+else:
+    from ConfigParser import NoSectionError, NoOptionError
 
 
 class MockConfigParser(object):
