@@ -202,10 +202,10 @@ class Scenario(object):
     def cmd_wait(self, cmd, shell=False, stdout=None, stderr=None):
 
         if self.conf.dryrun:
-            logger.info("run and wait cmd : %s", ' '.join(cmd))
+            logger.info("run and wait cmd : %s", cmd)
             return 0
         else:
-            logger.debug("run and wait cmd: %s", ' '.join(cmd))
+            logger.debug("run and wait cmd: %s", cmd)
             (p_stdout, p_stderr) = self._output_streams(stdout, stderr)
             return call(cmd, shell=shell, stdout=p_stdout, stderr=p_stderr)
 
