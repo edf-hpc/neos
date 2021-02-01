@@ -31,6 +31,7 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
+import six
 import logging
 logger = logging.getLogger(__name__)
 import sys
@@ -46,9 +47,8 @@ from neos.version import __version__
 from neos.utils import Singleton
 
 
+@six.add_metaclass(Singleton)
 class AppConf(object):
-
-    __metaclass__ = Singleton
 
     def __init__(self):
 

@@ -49,6 +49,7 @@ setup(name='NEOS',
       keywords=['hpc', 'supercomputers', 'jobs', 'visualization', 'slurm'],
       install_requires=['clustershell',
                         'pyslurm',
+                        'six',
                         'pytz' ],
       description="NEOS is a HPC visualization session manager for " \
                   "graphical nodes of supercomputers. Users can choose " \
