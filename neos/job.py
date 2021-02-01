@@ -31,6 +31,7 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL license and that you accept its terms.
 
+import six
 import logging
 logger = logging.getLogger(__name__)
 import os
@@ -48,9 +49,8 @@ def localtz():
     return timezone(time.tzname[0])
 
 
+@six.add_metaclass(Singleton)
 class SlurmJob(object):
-
-    __metaclass__ = Singleton
 
     def __init__(self):
 
