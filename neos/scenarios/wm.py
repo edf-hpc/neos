@@ -96,7 +96,7 @@ class ScenarioWM(Scenario):
         # Launch the window manager once on every nodes of the job, as this is
         # a requirement for distributed rendering solutions such as paraview.
         cmd = ['srun', '--tasks-per-node=1',
-               'dbus-launch', '--exit-with-session', wm]
+               'dbus-launch', '--exit-with-x11', wm]
         self.cmd_run_bg(cmd, stderr=stderr)
 
         self.sleep(1)
