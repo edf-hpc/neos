@@ -85,6 +85,14 @@ class ScenarioWM(Scenario):
         os.environ['DISPLAY'] = ":%s" % (self.display)
         os.environ['XAUTHORITY'] = self.opts.xauthfile
 
+        i = 0
+        while self.cmd_wait(['xset', '-q']):
+            i += 1
+            if i >= 30:
+                print('Error: X11 server not ready')
+                return 1
+            self.sleep(1)
+
         # Launch the window manager once on every nodes of the job, as this is
         # a requirement for distributed rendering solutions such as paraview.
         cmd = ['srun', '--tasks-per-node=1',
