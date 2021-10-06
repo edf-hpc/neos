@@ -85,6 +85,14 @@ class ScenarioWM(Scenario):
         os.environ['DISPLAY'] = ":%s" % (self.display)
         os.environ['XAUTHORITY'] = self.opts.xauthfile
 
+        i = 0
+        while self.cmd_wait(['xset', '-q']):
+            i += 1
+            if i >= 30:
+                print('Error: X11 server not ready')
+                return 1
+            self.sleep(1)
+
         # Launch the window manager once on every nodes of the job, as this is
         # a requirement for distributed rendering solutions such as paraview.
         #
@@ -93,7 +101,7 @@ class ScenarioWM(Scenario):
         # Otherwise, this nested srun will wait endlessly the parent srun to
         # finish and release the ressources.
         cmd = ['srun', '--tasks-per-node=1', '--overlap',
-               'dbus-launch', '--exit-with-session', wm]
+               'dbus-launch', '--exit-with-x11', wm]
         self.cmd_run_bg(cmd, stderr=stderr)
 
         self.sleep(1)
