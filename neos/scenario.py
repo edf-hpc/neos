@@ -126,7 +126,7 @@ class Scenario(object):
 
     def sleep(self, time):
         """Sleep if not in dry-run mode."""
-        if self.conf.dryrun:
+        if not self.conf.dryrun:
             sleep(time)
 
     def register_tmpfile(self, filename):
