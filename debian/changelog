@@ -1,3 +1,11 @@
+neos (0.6.16) calibre9; urgency=medium
+
+  * Allow nested srun to overlap parent srun
+  * Bump shebang to python3
+  * Fix iteritems python3 migration bug
+
+ -- Rémi Palancher <remi-externe.palancher@edf.fr>  Thu, 24 Feb 2022 11:48:31 +0100
+
 neos (0.6.15) calibre9; urgency=medium
 
   * Fix sleep issue
