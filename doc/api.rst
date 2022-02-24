@@ -12,7 +12,7 @@ requirements to be a valid and usable scenario for the application:
 
 A minimal Scenario would look like::
 
-    #!/usr/bin/env python
+    #!/usr/bin/env python3
 
     from neos import Scenario
 
@@ -44,7 +44,7 @@ declaration of optional parameters is done through the ``OPTS`` class
 attribute. As an example, optional paramters can be added to the previous
 *minimal* scenario this way::
 
-    #!/usr/bin/env python
+    #!/usr/bin/env python3
 
     from neos import Scenario
 
@@ -92,7 +92,7 @@ stdout and stderr outputs to arbitrary files at command level. This is
 controlled with optional ``stdout`` and ``stderr`` arguments of ``cmd_run_bg()``
 and ``cmd_wait()`` scenarios methods. Here is a commented example::
 
-    #!/usr/bin/env python
+    #!/usr/bin/env python3
     
     from neos import Scenario
     
@@ -137,7 +137,7 @@ generic code shared by multiple scenarios.
 
 Here is a complete example::
 
-    #!/usr/bin/env python
+    #!/usr/bin/env python3
 
     from neos import Scenario
 
