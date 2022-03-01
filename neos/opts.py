@@ -65,7 +65,7 @@ class ScenarioOpts(object):
 
     def __iter__(self):
 
-        for name, opt in self._opts.iteritems():
+        for name, opt in self._opts.items():
             yield (opt.name, opt.p_type.__name__, str(opt.value))
 
     @staticmethod
