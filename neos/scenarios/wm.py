@@ -93,6 +93,14 @@ class ScenarioWM(Scenario):
                 return 1
             self.sleep(1)
 
+        # The --exit-with-x11 parameter was added to dbus 1.11.4, make sure it's
+        # supported
+        dbus_version = self.cmd_output(['dbus-launch', '--help']).decode()
+        if '--exit-with-x11' in dbus_version:
+            dbus_exit = '--exit-with-x11'
+        else:
+            dbus_exit = '--exit-with-session'
+
         # Launch the window manager once on every nodes of the job, as this is
         # a requirement for distributed rendering solutions such as paraview.
         #
@@ -101,7 +109,7 @@ class ScenarioWM(Scenario):
         # Otherwise, this nested srun will wait endlessly the parent srun to
         # finish and release the ressources.
         cmd = ['srun', '--tasks-per-node=1', '--overlap',
-               'dbus-launch', '--exit-with-x11', wm]
+               'dbus-launch', dbus_exit, wm]
         self.cmd_run_bg(cmd, stderr=stderr)
 
         self.sleep(1)
